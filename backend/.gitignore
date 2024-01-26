@@ -1,0 +1,9 @@
+# Ignore Python virtual environment
+venv/
+
+# Ignore IDE files
+.vscode/
+.idea/
+
+# Ignore compiled Python files
+*.pyc
