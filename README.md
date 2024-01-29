@@ -16,6 +16,8 @@ Frontend accessible at http://localhost:3000
 Clone repository in VS Code
 ```
 cd backend
+python -m venv venv
+.\venv\Scripts\activate # MacOS + Linux: source venv/bin/activate
 pip install -r requirements.txt (may need to include --user)
 ```
 
@@ -24,6 +26,11 @@ Start the FastAPI server
 uvicorn main:app --reload
 ```
 FastAPI server accessible at http://localhost:8000
+
+When finished with development, deactivate the virtual environment.
+```
+.\venv\Scripts\deactivate # MacOS + Linux: deactivate
+```
 
 ## Contibuting 
 Create a fork of the repository. From your fork, you can work on your main branch or create sub-branches for functionality. Submit pull requests to main branch, then merge if you don't want a code review.  
