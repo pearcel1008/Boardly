@@ -10,7 +10,7 @@ npm install
 npm start 
 ```
 
-Frontend accessible at http://localhost:3000
+Frontend accessible at https://localhost:3000
 
 ### Backend 
 Clone repository in VS Code
@@ -31,6 +31,14 @@ When finished with development, deactivate the virtual environment.
 ```
 .\venv\Scripts\deactivate # MacOS + Linux: deactivate
 ```
+
+## Accessing API endpoints
+
+Follow steps for backend setup. Launch http://localhost:8000/docs
+
+This is the swaggerUI page, where you can see request parameters, response formats, and the URLs to connect backend to frontend. 
+
+Click the dropdown for a given API, click Try It Out, click execute, grab the URL beneath "curl"
 
 ## Contibuting 
 Create a fork of the repository. From your fork, you can work on your main branch or create sub-branches for functionality. Submit pull requests to main branch, then merge if you don't want a code review.  
