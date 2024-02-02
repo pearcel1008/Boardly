@@ -1,0 +1,27 @@
+@font-face {
+    font-family: 'Titillium Web';
+    src: url('TitilliumWeb-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Titillium Web';
+    src: url('TitilliumWeb-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Titillium Web';
+    src: url('TitilliumWeb-Light.ttf') format('truetype');
+    font-weight: light;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Berkeley Mono';
+    src: url('BerkeleyMono-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}

@@ -3,7 +3,7 @@ import './Topbar.css';
 import { extendTheme, ChakraProvider, Flex, Spacer, Box, Center} from '@chakra-ui/react'
 import { Link } from 'react-router-dom';
 import Logo from './Logo.js';
-import MenuLinks from './MenuLinks.js';
+import ProfileMenu from './ProfileMenu.js';
 
 function Topbar() {
   return (
@@ -16,7 +16,7 @@ function Topbar() {
           </Box>
           <Spacer />
           <Box p="2">
-            <Center h='5.8vh' style={{paddingBottom: '1vh'}} ><MenuLinks /></Center>
+            <Center h='5.8vh' style={{paddingBottom: '1vh'}} ><ProfileMenu /></Center>
           </Box>
         </Flex>
 

@@ -13,7 +13,6 @@ function Button() {
 
 function App() {
   return (
-    <ChakraProvider>
       <div className="App">
         <header className="App-header">
           <Topbar />
@@ -22,7 +21,6 @@ function App() {
         <Container>
         </Container>
       </div>
-    </ChakraProvider>
   );
 }
 
