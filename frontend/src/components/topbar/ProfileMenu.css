@@ -1,0 +1,5 @@
+.link, .link:link, .link:visited, .chakra-menu__menuitem{
+    font-family: 'Titillium Web';
+    padding: 10px 0;
+    display: block;
+}
