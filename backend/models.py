@@ -8,5 +8,5 @@ class User(BaseModel):
     email : str
     password: str
     date_registered : str 
-    board_member : List[str] = [] ## List of boards user is a member of, key = board_id
+    board_member : List[str] = [] # List of boards user is a member of, key = board_id
 

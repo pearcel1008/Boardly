@@ -1,4 +1,4 @@
-## This file is complete
+## This file is COMPLETE
 
 ## -----------------------------------------------------
 
@@ -6,12 +6,27 @@ from fastapi import FastAPI
 from dotenv import dotenv_values
 from azure.cosmos.aio import CosmosClient
 from azure.cosmos import PartitionKey, exceptions
+from fastapi.middleware.cors import CORSMiddleware
 from routes import router as router
 
 config = dotenv_values(".env")
 app = FastAPI(title="Boardly Endpoints")
 database_name = "boardly_db"
 container_name = "boardly_container"
+
+origins = [
+    "http://localhost:3000",
+    "http://localhost",
+    "127.0.0.1"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(router, prefix="/boardly")
 
@@ -22,7 +37,6 @@ async def startup_db_client():
     await get_or_create_db(database_name)
     await get_or_create_container(container_name)
     # Connect to OpenAI
-
 
 async def get_or_create_db(db_name):
     try:
