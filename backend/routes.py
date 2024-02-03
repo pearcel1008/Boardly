@@ -12,7 +12,8 @@ from api import user, github, login
 
 tags_metadata = [
     {"name": "User"},
-    {"name": "GitHub Login"}
+    {"name": "GitHub Login"},
+    {"name": "Standard Login"}
 ]
 
 router = APIRouter()
