@@ -2,6 +2,7 @@ import './App.css';
 import Topbar from './components/topbar/Topbar.js';
 import Logo from './components/topbar/Logo.js';
 import { extendTheme, ChakraProvider, Container } from '@chakra-ui/react'
+import { AuthProvider } from './AuthContext.js';
 
 function Button() {
   return (
@@ -13,6 +14,7 @@ function Button() {
 
 function App() {
   return (
+    <AuthProvider>
       <div className="App">
         <header className="App-header">
           <Topbar />
@@ -21,6 +23,7 @@ function App() {
         <Container>
         </Container>
       </div>
+    </AuthProvider>
   );
 }
 
