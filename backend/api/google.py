@@ -7,13 +7,11 @@ from authlib.integrations.starlette_client import OAuth, OAuthError
 from dotenv import dotenv_values
 from api.user import User, user_get, user_create
 
-app = FastAPI()
 config = dotenv_values(".env")
 CLIENT_ID = config["GOOGLE_CLIENT_ID"]
 CLIENT_SECRET = config["GOOGLE_CLIENT_SECRET"]
 
 router = APIRouter()
-app.add_middleware(SessionMiddleware, secret_key="add any string...")
 
 oauth = OAuth()
 oauth.register(
@@ -70,7 +68,6 @@ async def auth(request: Request):
         print("Token is None. Handle this case accordingly.")
     return RedirectResponse(f"http://localhost:3000/success")
 
-@app.get('/logout')
 def logout(request: Request):
     request.session.pop('user')
     request.session.clear()
