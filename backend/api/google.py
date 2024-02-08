@@ -34,7 +34,6 @@ async def google_login_callback(request: Request):
 @router.get('/auth')
 async def auth(request: Request):
     token = None
-    user_id = None
     try:
         token = await oauth.google.authorize_access_token(request)
     except OAuthError as e:
@@ -60,7 +59,6 @@ async def auth(request: Request):
 
                 # Create the user in your database
                 await user_create(request, user_data_for_creation)
-                user_id = user_data_for_creation.id
                 print("USER CREATED")
             else:
                 print("USER EXISTS")
@@ -68,4 +66,4 @@ async def auth(request: Request):
             print("User info not found in token")
     else:
         print("Token is None. Handle this case accordingly.")
-    return RedirectResponse(f'http://localhost:3000/dashboard?user_id={user_id}')
+    return RedirectResponse(f'http://localhost:3000/dashboard?user_id={str(user.sub)}')
