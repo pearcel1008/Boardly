@@ -13,7 +13,7 @@ import {
   } from '@chakra-ui/react'
 import './ProfileMenu.css';
 import { useTheme } from '@emotion/react';
-import LoginModal  from '../loginmodal/LoginModal';
+
 import { useAuth } from '../../AuthContext.js';
 import LogoutModal from '../logoutmodal/LogoutModal';
 
@@ -31,11 +31,7 @@ function ProfileMenu() {
             )}
         </MenuButton>
         <MenuList>
-            {loggedIn ? (
-            <LogoutModal />
-            ) : (
-            <LoginModal />
-            )}
+           
             
         </MenuList>
         </Menu>
