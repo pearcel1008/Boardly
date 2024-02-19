@@ -25,7 +25,6 @@ oauth.register(
     }
 )
 
-
 @router.get('/login')
 async def google_login_callback(request: Request):
     url = request.url_for('auth')
