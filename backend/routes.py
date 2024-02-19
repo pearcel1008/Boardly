@@ -5,8 +5,8 @@ from fastapi.responses import RedirectResponse
 from dotenv import dotenv_values
 import httpx
 
-from models import User
-from api import user, github, login
+from models import User, Board, CardList, Card
+from api import user, login, google, github, cardlist, card, board
 
 # Tags for organizing Swagger UI
 
@@ -63,3 +63,71 @@ async def get_github_user_data(request: Request, access_token: str):
 @router.post("/login", tags=["Standard Login"])
 async def cred_get(request: Request, email: str, password: str):
     return await login.cred_get(request, email, password)
+
+# Google Login held within google.py
+
+# Board manipulation
+
+@router.post("/board/create", response_model=Board, tags=["Board"])
+async def board_create(request: Request, board_item: Board):
+    return await board.board_create(request, board_item)
+
+@router.get("/board/get", tags=["Board"])
+async def board_get(request: Request, id: str):
+    return await board.board_get(request, id)
+
+@router.delete("/board/delete", tags=["Board"])
+async def board_delete(request: Request, id: str):
+    await board.board_delete(request, id)
+
+@router.post("/board/update", response_model=Board, tags=["Board"])
+async def board_update(request: Request, board_item: Board):
+    return await board.board_update(request, board_item)
+
+@router.get("/board/get/all", response_model=List[Board], tags=["Board"])
+async def board_get_all(request: Request):
+    return await board.board_get_all(request)
+
+# Card manipulation
+
+@router.post("/card/create", response_model=Card, tags=["Card"])
+async def card_create(request: Request, card_item: Card):
+    return await card.card_create(request, card_item)
+
+@router.get("/card/get", tags=["Card"])
+async def card_get(request: Request, id: str):
+    return await card.card_get(request, id)
+
+@router.delete("/card/delete", tags=["Card"])
+async def card_delete(request: Request, id: str):
+    await card.card_delete(request, id)
+
+@router.post("/card/update", response_model=Card, tags=["Card"])
+async def card_update(request: Request, card_item: Card):
+    return await card.card_update(request, card_item)
+
+@router.get("/card/get/all", response_model=List[Card], tags=["Card"])
+async def card_get_all(request: Request):
+    return await card.card_get_all(request)
+
+# CardList manipulation
+
+@router.post("/cardlist/create", response_model=CardList, tags=["CardList"])
+async def cardlist_create(request: Request, cardlist_item: CardList):
+    return await cardlist.cardlist_create(request, cardlist_item)
+
+@router.get("/cardlist/get", tags=["CardList"])
+async def cardlist_get(request: Request, id: str):
+    return await cardlist.cardlist_get(request, id)
+
+@router.delete("/cardlist/delete", tags=["CardList"])
+async def cardlist_delete(request: Request, id: str):
+    await cardlist.cardlist_delete(request, id)
+
+@router.post("/cardlist/update", response_model=CardList, tags=["CardList"])
+async def cardlist_update(request: Request, cardlist_item: CardList):
+    return await cardlist.cardlist_update(request, cardlist_item)
+
+@router.get("/cardlist/get/all", response_model=List[CardList], tags=["CardList"])
+async def cardlist_get_all(request: Request):
+    return await cardlist.cardlist_get_all(request)
