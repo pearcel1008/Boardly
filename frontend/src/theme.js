@@ -15,6 +15,9 @@ export const customTheme = extendTheme({
         50: '#fff5f5',
         900: '#610404',
       },
+      blue:{
+      50:  '87EAFF'
+      },
       // ...
     },
 });

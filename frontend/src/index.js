@@ -6,7 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import { ChakraProvider } from '@chakra-ui/react';
 import { customTheme } from './theme';
 import './fontfaces/fonts.css';
-
+//import SignUpForm from './SignUpForm';m
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
