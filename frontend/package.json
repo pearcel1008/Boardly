@@ -24,7 +24,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "theme": "chakra-cli tokens ./src/theme.js",
+    "theme:watch": "chakra-cli tokens ./src/theme.js --watch"
   },
   "eslintConfig": {
     "extends": [
@@ -45,6 +47,7 @@
     ]
   },
   "devDependencies": {
+    "@chakra-ui/cli": "^2.4.1",
     "tailwindcss": "^3.4.1"
   }
 }
