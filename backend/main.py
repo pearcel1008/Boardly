@@ -7,7 +7,9 @@ from dotenv import dotenv_values
 from azure.cosmos.aio import CosmosClient
 from azure.cosmos import PartitionKey, exceptions
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.sessions import SessionMiddleware
 from routes import router as router
+from api.google import router as google_router 
 
 config = dotenv_values(".env")
 app = FastAPI(title="Boardly Endpoints")
@@ -17,7 +19,9 @@ container_name = "boardly_container"
 origins = [
     "http://localhost:3000",
     "http://localhost",
-    "127.0.0.1"
+    "127.0.0.1",
+    "127.0.0.1:3000",
+    "localhost:3000"
 ]
 
 app.add_middleware(
@@ -28,7 +32,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.add_middleware(SessionMiddleware, secret_key="add any string...")
 app.include_router(router, prefix="/boardly")
+app.include_router(google_router, prefix="/google")
 
 @app.on_event("startup")
 async def startup_db_client():

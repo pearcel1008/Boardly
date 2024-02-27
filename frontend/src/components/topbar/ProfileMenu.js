@@ -27,11 +27,14 @@ function ProfileMenu() {
             {loggedIn ? (
             <Avatar size={{base: 'sm', md: 'md', lg: 'lg'}} name='Jeremy Martin' src='https://bit.ly/3Uuox37'/>
             ) : (
-            <Avatar size={{base: 'sm', md: 'md', lg: 'lg'}}  bg={'teal.500'}/>
+            <Avatar size={{base: 'sm', md: 'md', lg: 'lg'}}  bg={'blue.300'}/>
             )}
         </MenuButton>
         <MenuList>
-           
+            <MenuItem color={'blue.500'}>Profile</MenuItem>
+            <MenuItem>Settings</MenuItem>
+            <MenuDivider />
+            <LogoutModal /> 
             
         </MenuList>
         </Menu>

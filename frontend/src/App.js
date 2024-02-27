@@ -4,11 +4,12 @@ import Logo from './components/topbar/Logo.js';
 import { ChakraProvider, Container } from '@chakra-ui/react'
 import { AuthProvider } from './AuthContext.js';
 import Home from './components/LoginScreen/Home.js'; // Import the Home component
+import {customTheme as theme} from './theme.js';
 
 function App() {
   return (
     <AuthProvider>
-      <ChakraProvider>
+      <ChakraProvider theme={theme}>
         <div className="App">
           <header className="App-header">
             <Topbar />
@@ -24,4 +25,5 @@ function App() {
     </AuthProvider>
   );
 }
+
 export default App;

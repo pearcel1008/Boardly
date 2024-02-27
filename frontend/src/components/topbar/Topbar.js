@@ -1,13 +1,15 @@
 import logo from '../../logo.svg';
 import './Topbar.css';
-import { extendTheme, ChakraProvider, Flex, Spacer, Box, Center, Text} from '@chakra-ui/react'
+import { useTheme, ChakraProvider, Flex, Spacer, Box, Center, Text, theme} from '@chakra-ui/react'
 import { Link } from 'react-router-dom';
 import Logo from './Logo.js';
 import ProfileMenu from './ProfileMenu.js';
 
 function Topbar() {
+  const theme = useTheme();
+
   return (
-    <Flex className="w-full h-16 fixed top-0 left-0 bg-[#62587c] z-50" align="center">
+    <Flex className="w-full h-16 fixed top-0 left-0  z-50" align="center" bg={theme.colors.brand.vacuum}>
       <Box p="2" className="flex-grow-0">
         <Flex align="center"> {/* This ensures vertical center alignment */}
           <Logo className='h-full w-auto'/>

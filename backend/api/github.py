@@ -7,6 +7,7 @@ from dotenv import dotenv_values
 from api.user import user_get, user_create
 from models import User
 from datetime import datetime
+from fastapi.responses import RedirectResponse
 
 config = dotenv_values(".env")
 github_client_id = config["GITHUB_CLIENT_ID"]
@@ -49,9 +50,7 @@ async def login_callback(request: Request, code: str):
             date_registered = str(datetime.now().date()), 
             board_member = []
         )
-
+                    
         # Create the user in your database
         created_user = await user_create(request, user_data_for_creation)
-        return created_user
-    else:
-        return user_state
+    return RedirectResponse(f'http://localhost:3000/dashboard?user_id={str(user_data["id"])}')
