@@ -1,5 +1,4 @@
 import { extendTheme } from '@chakra-ui/react';
-import { MenuTheme } from '@chakra-ui/menu';
 
 export const customTheme = extendTheme({
     colors: {
@@ -16,9 +15,21 @@ export const customTheme = extendTheme({
         900: '#610404',
       },
       blue:{
-      50:  '87EAFF'
+        50:  '87EAFF',
+        500: '2d9de3',
       },
-      // ...
+      brand: {
+        mauve: '#d1b9ff',
+        ultraviolet: '#62587c',
+        spacecadet: '#3d325d',
+        vacuum: '#24263a',
+        oxford: '#14142b',
+        nonphoto: '#87eaff',
+        vividsky: '#47ddff',
+        cerulean: '#00758f',
+        jasmine: '#ffe785',
+        mustard: '#ffd93f',
+      },
     },
 });
 
