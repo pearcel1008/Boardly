@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-
+import { useNavigate } from 'react-router-dom';
 
 const SignUpForm = () => {
   const [formData, setFormData] = useState({
@@ -31,6 +30,8 @@ const SignUpForm = () => {
     });
   };
 
+  const navigate = useNavigate();
+
   return (
     <div>
       <h1>Sign Up</h1>
@@ -51,7 +52,11 @@ const SignUpForm = () => {
           <label htmlFor="password">Password:</label>
           <input type="password" id="password" name="password" value={formData.password} onChange={handleChange} required />
         </div>
-        <button type="submit">Sign Up</button>
+        <button type="submit" onClick={() => {
+          navigate("/")
+        }}>
+          Sign Up
+        </button>
       </form>
     </div>
   );

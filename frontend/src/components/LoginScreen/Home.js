@@ -1,8 +1,4 @@
-import React from 'react';
-import { Link } from 'react-router-dom'; // Import Link from React Router
-import { FaGithub, FaGoogle } from "react-icons/fa";
-import SignUpForm from './src/components/LoginScreen/SignUp/Signup.js';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import Reac, { useState } from 'react';
 import {
   Box,
   Button,
@@ -14,9 +10,12 @@ import {
   Text
 } from '@chakra-ui/react';
 import { useTheme, defineStyle, defineStyleConfig } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
+import { FaGithub, FaGoogle } from "react-icons/fa";
 /*TODO: PUT GITHUB/GOOGLE LOGIN BUTTONS BETWEEN LOGIN BUTTON AND DIVIDER */
 const Home = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
   console.log("theme is about to be logged");
   console.log(theme.colors);
   return (
@@ -26,30 +25,30 @@ const Home = () => {
           <Heading>Login</Heading>
         </Box>
         <Stack spacing={4} width="300px" margin="0 auto">
-  {/* Existing login inputs and button */}
-  <Input
-    placeholder="Email"
-    variant="filled"
-    size="lg"
-    type="email"
-  />
-  <Input
-    placeholder="Password"
-    variant="filled"
-    size="lg"
-    type="password"
-  />
-  <Button
-    bg={theme.colors.brand.vacuum}
-    color={theme.colors.brand.mauve}
-    type="submit"
-    size="lg"
-    width="full"
-  >
-    Login
-  </Button>
-  <Divider />
-  {/* GitHub and Google login buttons */}
+          <Input
+            placeholder="Email"
+            variant="filled"
+            size="lg"
+            type="email"
+          />
+          <Input
+            placeholder="Password"
+            variant="filled"
+            size="lg"
+            type="password"
+          />
+          <Button
+            bg={theme.colors.brand.vacuum}
+            color={theme.colors.brand.mauve}
+            
+            type="submit"
+            size="lg"
+            width="full"
+          >
+            Login
+          </Button>
+          <Divider />
+            {/* GitHub and Google login buttons */}
   <Button
   variant="outline"
   borderColor={theme.colors.brand.spacecadet}
@@ -73,19 +72,23 @@ const Home = () => {
     Sign in with Google
   </Button>
   {/* Sign up button */}
-  <Text fontSize={'xs'} color={theme.colors.brand.mauve} >Don't have an account?</Text>
-  <Button
-    variant="outline"
-    color={theme.colors.brand.mauve}
-    borderColor={theme.colors.brand.spacecadet}
-    size="lg"
-    width="full"
+          <Text fontSize={'xs'} color={theme.colors.brand.mauve} >Don't have an account?</Text>
+            <Button
+              variant="outline"
+                
+              color={theme.colors.brand.mauve}
+              borderColor={theme.colors.brand.spacecadet}
+              size="lg"
+              width="full"
+              onClick={() => {
+                navigate("/signup")
+              }}
+            >
+              Sign Up
+            </Button>
+        </Stack>
 
-  >
-    Sign Up
-  </Button>
-</Stack>
-
+        
       </form>
     </Flex>
   );
