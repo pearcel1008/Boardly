@@ -1,4 +1,4 @@
-import Reac, { useState } from 'react';
+import React from 'react';
 import {
   Box,
   Button,
@@ -9,9 +9,13 @@ import {
   Divider,
   Text
 } from '@chakra-ui/react';
-import { useTheme, defineStyle, defineStyleConfig } from '@chakra-ui/react';
+import { useTheme } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { FaGithub, FaGoogle } from "react-icons/fa";
+import GoogleButton from './GoogleButton';
+import {GoogleLogin} from 'react-google-login';
+import {gapi} from 'gapi-script';
+
 /*TODO: PUT GITHUB/GOOGLE LOGIN BUTTONS BETWEEN LOGIN BUTTON AND DIVIDER */
 const Home = () => {
   const theme = useTheme();
@@ -57,7 +61,9 @@ const Home = () => {
     color={theme.colors.brand.mauve}
     size="lg"
     width="full"
-  >
+
+    onClick={handleLoginGitHub}>
+  
     Sign in with GitHub
   </Button>
   <Button
@@ -68,6 +74,8 @@ const Home = () => {
     color={theme.colors.brand.mauve}
     size="lg"
     width="full"
+    
+    onClick={handleGoogleLogin}
   >
     Sign in with Google
   </Button>
@@ -93,5 +101,18 @@ const Home = () => {
     </Flex>
   );
 };
+const handleGoogleLogin = () => {
+  // Redirect the user to the Google authentication endpoint
+  const googleAuthUrl = 'https://accounts.google.com/o/oauth2/auth';
+  
+  window.location.href = googleAuthUrl;
+
+};
+
+const handleLoginGitHub = () => {
+  const githubAuthorizeUrl = 'https://github.com/login/oauth/authorize?client_id=56248e47f60d52542c9a&redirect_uri=http://localhost:8000/boardly/login/callback&scope=read:user';
+  window.location.href = githubAuthorizeUrl;
+};
+
 
 export default Home;
