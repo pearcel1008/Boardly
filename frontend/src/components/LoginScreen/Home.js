@@ -103,7 +103,7 @@ const Home = () => {
 };
 const handleGoogleLogin = () => {
   // Redirect the user to the Google authentication endpoint
-  const googleAuthUrl = 'https://accounts.google.com/o/oauth2/auth';
+  const googleAuthUrl = 'http://localhost:8000/google/login';
   
   window.location.href = googleAuthUrl;
 
