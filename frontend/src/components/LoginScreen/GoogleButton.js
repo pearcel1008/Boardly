@@ -7,7 +7,8 @@ import { FaGoogle } from 'react-icons/fa'; // Import Google icon
 const GoogleButton = () => {
   const handleGoogleLogin = () => {
     // Redirect the user to the Google authentication endpoint
-    window.location.href = '/login';
+    const googleAuthorizeUrl = 'http://localhost:8000/google/login';
+    window.location.href = googleAuthorizeUrl;
   };
 
   return (
