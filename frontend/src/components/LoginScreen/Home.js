@@ -13,8 +13,6 @@ import { useTheme } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { FaGithub, FaGoogle } from "react-icons/fa";
 import GoogleButton from './GoogleButton';
-import {GoogleLogin} from 'react-google-login';
-import {gapi} from 'gapi-script';
 
 /*TODO: PUT GITHUB/GOOGLE LOGIN BUTTONS BETWEEN LOGIN BUTTON AND DIVIDER */
 const Home = () => {
