@@ -1,6 +1,7 @@
 from fastapi import Request
 from fastapi.encoders import jsonable_encoder
 from models import Board, CardList, Card
+from api.board import board_get
 from typing import List
 
 async def cardlist_create(request: Request, cardlist_item: CardList):
@@ -27,7 +28,7 @@ async def cardlist_delete(request: Request, id: str):
     await request.app.boardly_container.delete_item(id, partition_key=pk)
     return "Item successfully deleted!"
 
-async def card_update(request: Request, cardlist_item: CardList):
+async def cardlist_update(request: Request, cardlist_item: CardList):
     # Updates every field in the requested Board to be updated
     existing_item = await request.app.boardly_container.read_item(cardlist_item.id, partition_key = cardlist_item.id)
     existing_item_dict = jsonable_encoder(existing_item)
@@ -35,6 +36,21 @@ async def card_update(request: Request, cardlist_item: CardList):
     for (k) in update_dict.keys():
         existing_item_dict[k] = update_dict[k]
     return await request.app.boardly_container.replace_item(cardlist_item.id, existing_item_dict)
+
+# gets all cardlists for a particular board
+async def cardlist_get_boards(request: Request, board_id: str) -> List[CardList]:
+    _cardlists = []
+    board_item = await board_get(request, board_id)
+    # grab individual boards
+    board_dict = jsonable_encoder(board_item)
+    board_cardlists = board_dict['cardlists']
+    for cardlist_id in board_cardlists:
+            query = f"SELECT * FROM c WHERE STARTSWITH(c.id, 'cardlist_{cardlist_id}')"
+            async for cardlist in request.app.boardly_container.query_items(
+                query=query
+            ):
+                _cardlists.append(cardlist)
+    return _cardlists
 
 async def card_get_all(request: Request) -> List[CardList]:
     cardlists = []

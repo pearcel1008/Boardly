@@ -36,6 +36,21 @@ async def card_update(request: Request, card_item: Card):
         existing_item_dict[k] = update_dict[k]
     return await request.app.boardly_container.replace_item(card_item.id, existing_item_dict)
 
+# gets all cards for a particular cardlist
+async def card_get_cardlists(request: Request, cardlist_id: str) -> List[Card]:
+    _cards = []
+    cardlist_item = await cardlist_get(request, cardlist_id)
+    # grab individual boards
+    cardlist_dict = jsonable_encoder(cardlist_item)
+    cardlist_cards = user_dict['cards']
+    for card_id in cardlist_cards:
+            query = f"SELECT * FROM c WHERE STARTSWITH(c.id, 'card_{card_id}')"
+            async for card in request.app.boardly_container.query_items(
+                query=query
+            ):
+                _cards.append(card)
+    return _cards
+
 async def card_get_all(request: Request) -> List[Card]:
     cards = []
     query = "SELECT * FROM c WHERE c.id LIKE 'card_%'"

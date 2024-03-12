@@ -12,6 +12,9 @@ from api import user, login, google, github, cardlist, card, board
 
 tags_metadata = [
     {"name": "User"},
+    {"name": "Board"},
+    {"name": "Card"},
+    {"name": "CardList"},
     {"name": "GitHub Login"},
     {"name": "Standard Login"}
 ]
@@ -44,28 +47,6 @@ async def user_update(request: Request, user_item: User):
 async def user_get_all(request: Request):
     return await user.user_get_all(request)
 
-# GitHub Login
-
-@router.get("/github/login", tags=["GitHub Login"])
-def login_with_github(request: Request):
-    return RedirectResponse(f'https://github.com/login/oauth/authorize?client_id={github_client_id}', status_code=302)
-
-@router.get("/login/callback", tags=["GitHub Login"])
-async def login_callback(request: Request, code: str):
-    return await github.login_callback(request, code)
-
-@router.get("/github/get/user", tags=["GitHub Login"])
-async def get_github_user_data(request: Request, access_token: str):
-    return await github.github_authorize_url(request, access_token)
-
-# Standard Login 
-
-@router.post("/login", tags=["Standard Login"])
-async def cred_get(request: Request, email: str, password: str):
-    return await login.cred_get(request, email, password)
-
-# Google Login held within google.py
-
 # Board manipulation
 
 @router.post("/board/create", response_model=Board, tags=["Board"])
@@ -83,6 +64,10 @@ async def board_delete(request: Request, id: str):
 @router.post("/board/update", response_model=Board, tags=["Board"])
 async def board_update(request: Request, board_item: Board):
     return await board.board_update(request, board_item)
+
+@router.get("/board/get/users", response_model=List[Board], tags=["Board"])
+async def board_get_users(request: Request, user_id: str):
+    return await board.board_get_users(request, user_id)
 
 @router.get("/board/get/all", response_model=List[Board], tags=["Board"])
 async def board_get_all(request: Request):
@@ -106,6 +91,10 @@ async def card_delete(request: Request, id: str):
 async def card_update(request: Request, card_item: Card):
     return await card.card_update(request, card_item)
 
+@router.get("/card/get/cardlists", response_model=List[Card], tags=["Card"])
+async def card_get_cardlists(request: Request, cardlist_id: str):
+    return await card.card_get_cardlists(request, cardlist_id)
+
 @router.get("/card/get/all", response_model=List[Card], tags=["Card"])
 async def card_get_all(request: Request):
     return await card.card_get_all(request)
@@ -128,6 +117,33 @@ async def cardlist_delete(request: Request, id: str):
 async def cardlist_update(request: Request, cardlist_item: CardList):
     return await cardlist.cardlist_update(request, cardlist_item)
 
+@router.get("/cardlist/get/boards", response_model=List[CardList], tags=["CardList"])
+async def cardlist_get_boards(request: Request, board_id: str):
+    return await cardlist.cardlist_get_boards(request, board_id)
+
 @router.get("/cardlist/get/all", response_model=List[CardList], tags=["CardList"])
 async def cardlist_get_all(request: Request):
     return await cardlist.cardlist_get_all(request)
+
+# GitHub Login
+
+@router.get("/github/login", tags=["GitHub Login"])
+def login_with_github(request: Request):
+    return RedirectResponse(f'https://github.com/login/oauth/authorize?client_id={github_client_id}', status_code=302)
+
+@router.get("/login/callback", tags=["GitHub Login"])
+async def login_callback(request: Request, code: str):
+    return await github.login_callback(request, code)
+
+@router.get("/github/get/user", tags=["GitHub Login"])
+async def get_github_user_data(request: Request, access_token: str):
+    return await github.github_authorize_url(request, access_token)
+
+# Standard Login 
+
+@router.post("/login", tags=["Standard Login"])
+async def cred_get(request: Request, email: str, password: str):
+    return await login.cred_get(request, email, password)
+
+# Google Login held within google.py
+

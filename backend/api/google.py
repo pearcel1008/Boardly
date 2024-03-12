@@ -25,12 +25,12 @@ oauth.register(
     }
 )
 
-@router.get('/login')
+@router.get('/login', tags=["GitHub"])
 async def google_login_callback(request: Request):
     url = request.url_for('auth')
     return await oauth.google.authorize_redirect(request, url)
 
-@router.get('/auth')
+@router.get('/auth', tags=["GitHub"])
 async def auth(request: Request):
     token = None
     try:
