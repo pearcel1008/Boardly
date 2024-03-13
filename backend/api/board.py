@@ -41,9 +41,14 @@ async def board_update(request: Request, board_item: Board):
         existing_item_dict[k] = update_dict[k]
     return await request.app.boardly_container.replace_item(board_item.id, existing_item_dict)
 
-# Won't need to ever call boards like this
-# Change to only call a certain user's boards
-## Users have lists of board ids, so pass into this then go through the list calling get, give back a set of boards 
+async def update_board_field(request: Request, board_id: str, field_name: str, new_value):
+    existing_board = await request.app.boardly_container.read_item("board_" + board_id, partition_key = "board_" + board_id)
+    if hasattr(existing_board, field_name):
+        setattr(existing_board, field_name, new_value)
+    else:
+        return {"error": f"Field '{field_name}' does not exist in the board model"}
+    await request.app.boardly_container.replace_item(board_id, existing_board)
+    return {"message": f"Field '{field_name}' updated successfully"}
 
 async def board_get_users(request: Request, user_id: str) -> List[Board]:
     boards = []
@@ -59,11 +64,15 @@ async def board_get_users(request: Request, user_id: str) -> List[Board]:
                 boards.append(board)
     return boards
 
-async def board_get_all(request: Request) -> List[Board]:
+# Won't need to ever call boards like this
+# Change to only call a certain user's boards
+## Users have lists of board ids, so pass into this then go through the list calling get, give back a set of boards 
+
+""" async def board_get_all(request: Request) -> List[Board]:
     boards = []
     query = "SELECT * FROM c WHERE c.id LIKE 'board_%'"
     async for board in request.app.boardly_container.query_items(
         query=query
     ):
         boards.append(board)
-    return boards
+    return boards """

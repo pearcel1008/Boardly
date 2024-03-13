@@ -37,6 +37,15 @@ async def cardlist_update(request: Request, cardlist_item: CardList):
         existing_item_dict[k] = update_dict[k]
     return await request.app.boardly_container.replace_item(cardlist_item.id, existing_item_dict)
 
+async def update_cardlist_field(request: Request, cardlist_id: str, field_name: str, new_value):
+    existing_cardlist = await request.app.boardly_container.read_item(cardlist_id, partition_key=cardlist_id)
+    if hasattr(existing_cardlist, field_name):
+        setattr(existing_cardlist, field_name, new_value)
+    else:
+        return {"error": f"Field '{field_name}' does not exist in the card model"}
+    await request.app.boardly_container.replace_item(cardlist_id, existing_cardlist)
+    return {"message": f"Field '{field_name}' updated successfully"}
+
 # gets all cardlists for a particular board
 async def cardlist_get_boards(request: Request, board_id: str) -> List[CardList]:
     _cardlists = []

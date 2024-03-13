@@ -43,6 +43,15 @@ async def user_update(request: Request, user_item: User):
         existing_item_dict[k] = update_dict[k]
     return await request.app.boardly_container.replace_item(user_item.id, existing_item_dict)
 
+async def update_user_field(request: Request, user_id: str, field_name: str, new_value):
+    existing_user = await request.app.boardly_container.read_item("user_" + user_id, partition_key = "user_" + user_id)
+    if hasattr(existing_user, field_name):
+        setattr(existing_user, field_name, new_value)
+    else:
+        return {"error": f"Field '{field_name}' does not exist in the board model"}
+    await request.app.boardly_container.replace_item(board_id, existing_board)
+    return {"message": f"Field '{field_name}' updated successfully"}
+
 async def user_get_all(request: Request) -> List[User]:
     users = []
     query = "SELECT * FROM c WHERE c.id LIKE 'user_%'"

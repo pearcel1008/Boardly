@@ -43,6 +43,10 @@ async def user_delete(request: Request, id: str):
 async def user_update(request: Request, user_item: User):
     return await user.user_update(request, user_item)
 
+@router.post("/user/update/field", tags=["User"])
+async def update_user_field(request: Request, user_id: str, field_name: str, new_value):
+    return await user.update_user_field(request, user_id, field_name, new_value)
+
 @router.get("/user/get/all", response_model=List[User], tags=["User"])
 async def user_get_all(request: Request):
     return await user.user_get_all(request)
@@ -64,6 +68,10 @@ async def board_delete(request: Request, id: str):
 @router.post("/board/update", response_model=Board, tags=["Board"])
 async def board_update(request: Request, board_item: Board):
     return await board.board_update(request, board_item)
+
+@router.post("/board/update/field", tags=["Board"])
+async def update_board_field(request: Request, board_id: str, field_name: str, new_value):
+    return await board.update_board_field(request, board_id, field_name, new_value)
 
 @router.get("/board/get/users", response_model=List[Board], tags=["Board"])
 async def board_get_users(request: Request, user_id: str):
@@ -91,6 +99,10 @@ async def card_delete(request: Request, id: str):
 async def card_update(request: Request, card_item: Card):
     return await card.card_update(request, card_item)
 
+@router.post("/card/update/field", tags=["Card"])
+async def update_card_field(request: Request, card_id: str, field_name: str, new_value):
+    return await card.update_card_field(request, card_id, field_name, new_value)
+
 @router.get("/card/get/cardlists", response_model=List[Card], tags=["Card"])
 async def card_get_cardlists(request: Request, cardlist_id: str):
     return await card.card_get_cardlists(request, cardlist_id)
@@ -116,6 +128,10 @@ async def cardlist_delete(request: Request, id: str):
 @router.post("/cardlist/update", response_model=CardList, tags=["CardList"])
 async def cardlist_update(request: Request, cardlist_item: CardList):
     return await cardlist.cardlist_update(request, cardlist_item)
+
+@router.post("/cardlist/update/field", tags=["CardList"])
+async def update_cardlist_field(request: Request, cardlist_id: str, field_name: str, new_value):
+    return await cardlist.update_cardlist_field(request, cardlist_id, field_name, new_value)
 
 @router.get("/cardlist/get/boards", response_model=List[CardList], tags=["CardList"])
 async def cardlist_get_boards(request: Request, board_id: str):
@@ -146,4 +162,3 @@ async def cred_get(request: Request, email: str, password: str):
     return await login.cred_get(request, email, password)
 
 # Google Login held within google.py
-
