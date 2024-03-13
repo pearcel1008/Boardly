@@ -2,7 +2,7 @@ from fastapi import Request
 import json
 from fastapi.encoders import jsonable_encoder
 from models import User, Board, CardList, Card
-from api.user import user_get
+from api.user import user_get, user_update
 from typing import List
 
 # Update CardLists
@@ -10,6 +10,16 @@ from typing import List
 
 async def board_create(request: Request, board_item: Board):
     board_item.id = "board_" + board_item.id
+    board_item.members.append(board_item.parent_id)
+    # update user's board_member list
+    parent_item = await user_get(request, board_item.parent_id)
+    if parent_item['board_member'] is None:
+        parent_item['board_member'] = []
+    parent_item['board_member'].append(board_item.id.split("board_", 1)[-1])
+    # update user in cosmos
+    parent_item_dict = jsonable_encoder(parent_item)
+    await request.app.boardly_container.replace_item("user_" + board_item.parent_id, parent_item_dict)
+    # create board in cosmos
     board_item = jsonable_encoder(board_item)
     board_item = await request.app.boardly_container.create_item(board_item)
     return board_item
@@ -65,8 +75,6 @@ async def board_get_users(request: Request, user_id: str) -> List[Board]:
     return boards
 
 # Won't need to ever call boards like this
-# Change to only call a certain user's boards
-## Users have lists of board ids, so pass into this then go through the list calling get, give back a set of boards 
 
 """ async def board_get_all(request: Request) -> List[Board]:
     boards = []

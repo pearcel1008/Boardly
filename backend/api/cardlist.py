@@ -6,6 +6,15 @@ from typing import List
 
 async def cardlist_create(request: Request, cardlist_item: CardList):
     cardlist_item.id = "cardlist_" + cardlist_item.id
+    # update boards's cardlists list
+    parent_item = await board_get(request, cardlist_item.parent_id)
+    if parent_item['cardlists'] is None:
+        parent_item['cardlists'] = []
+    parent_item['cardlists'].append(cardlist_item.id.split("cardlist_", 1)[-1])
+    # update board in cosmos
+    parent_item_dict = jsonable_encoder(parent_item)
+    await request.app.boardly_container.replace_item("board_" + cardlist_item.parent_id, parent_item_dict)
+    # create cardlist in cosmos
     cardlist_item = jsonable_encoder(cardlist_item)
     cardlist_item = await request.app.boardly_container.create_item(cardlist_item)
     return cardlist_item
@@ -61,7 +70,9 @@ async def cardlist_get_boards(request: Request, board_id: str) -> List[CardList]
                 _cardlists.append(cardlist)
     return _cardlists
 
-async def card_get_all(request: Request) -> List[CardList]:
+# Won't need to call cardlists like this
+
+async def cardlist_get_all(request: Request) -> List[CardList]:
     cardlists = []
     query = "SELECT * FROM c WHERE c.id LIKE 'cardlist_%'"
     async for cardlist in request.app.boardly_container.query_items(

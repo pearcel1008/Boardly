@@ -32,7 +32,7 @@ class CardList(BaseModel):
 class Board(BaseModel):
     id : str
     title : str
-    starred : bool # true/ false
+    starred : bool  # true/ false
     parent_id : str
     cardlists : List[str] = [] # List of CardList ids
     members : List[str] = [] # List of users, admin added upon board creation

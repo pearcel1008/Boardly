@@ -52,6 +52,8 @@ async def update_user_field(request: Request, user_id: str, field_name: str, new
     await request.app.boardly_container.replace_item(board_id, existing_board)
     return {"message": f"Field '{field_name}' updated successfully"}
 
+# Will be used for inviting users to boards
+
 async def user_get_all(request: Request) -> List[User]:
     users = []
     query = "SELECT * FROM c WHERE c.id LIKE 'user_%'"

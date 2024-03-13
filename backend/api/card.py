@@ -1,10 +1,20 @@
 from fastapi import Request
 from fastapi.encoders import jsonable_encoder
 from models import Board, CardList, Card
+from api.cardlist import cardlist_get
 from typing import List
 
 async def card_create(request: Request, card_item: Card):
     card_item.id = "card_" + card_item.id
+    # update cardlist's cards list
+    parent_item = await cardlist_get(request, card_item.parent_id)
+    if parent_item['cards'] is None:
+        parent_item['cards'] = []
+    parent_item['cards'].append(card_item.id.split("card_", 1)[-1])
+    # update cardlist in cosmos
+    parent_item_dict = jsonable_encoder(parent_item)
+    await request.app.boardly_container.replace_item("cardlist_" + card_item.parent_id, parent_item_dict)
+    # create card in cosmos
     card_item = jsonable_encoder(card_item)
     card_item = await request.app.boardly_container.create_item(card_item)
     return card_item
@@ -59,6 +69,8 @@ async def card_get_cardlists(request: Request, cardlist_id: str) -> List[Card]:
             ):
                 _cards.append(card)
     return _cards
+
+# Won't need to call cards like this
 
 async def card_get_all(request: Request) -> List[Card]:
     cards = []

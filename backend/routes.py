@@ -77,9 +77,9 @@ async def update_board_field(request: Request, board_id: str, field_name: str, n
 async def board_get_users(request: Request, user_id: str):
     return await board.board_get_users(request, user_id)
 
-@router.get("/board/get/all", response_model=List[Board], tags=["Board"])
+""" @router.get("/board/get/all", response_model=List[Board], tags=["Board"])
 async def board_get_all(request: Request):
-    return await board.board_get_all(request)
+    return await board.board_get_all(request) """
 
 # Card manipulation
 
@@ -107,9 +107,9 @@ async def update_card_field(request: Request, card_id: str, field_name: str, new
 async def card_get_cardlists(request: Request, cardlist_id: str):
     return await card.card_get_cardlists(request, cardlist_id)
 
-@router.get("/card/get/all", response_model=List[Card], tags=["Card"])
+""" @router.get("/card/get/all", response_model=List[Card], tags=["Card"])
 async def card_get_all(request: Request):
-    return await card.card_get_all(request)
+    return await card.card_get_all(request) """
 
 # CardList manipulation
 
@@ -137,9 +137,9 @@ async def update_cardlist_field(request: Request, cardlist_id: str, field_name: 
 async def cardlist_get_boards(request: Request, board_id: str):
     return await cardlist.cardlist_get_boards(request, board_id)
 
-@router.get("/cardlist/get/all", response_model=List[CardList], tags=["CardList"])
+""" @router.get("/cardlist/get/all", response_model=List[CardList], tags=["CardList"])
 async def cardlist_get_all(request: Request):
-    return await cardlist.cardlist_get_all(request)
+    return await cardlist.cardlist_get_all(request) """
 
 # GitHub Login
 
