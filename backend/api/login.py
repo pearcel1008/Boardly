@@ -2,6 +2,7 @@
 from fastapi import Request, HTTPException
 from fastapi.encoders import jsonable_encoder
 from passlib.context import CryptContext  # Use passlib for password hashing
+from azure.cosmos.exceptions import CosmosHttpResponseError
 
 # Create a CryptContext instance
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")

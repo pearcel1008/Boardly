@@ -3,6 +3,7 @@ from fastapi.encoders import jsonable_encoder
 from models import Board, CardList, Card
 from api.board import board_get
 from typing import List
+from azure.cosmos.exceptions import CosmosHttpResponseError
 
 async def cardlist_create(request: Request, cardlist_item: CardList):
     cardlist_item.id = "cardlist_" + cardlist_item.id
@@ -30,12 +31,6 @@ async def cardlist_get(request: Request, id: str):
             return None  # User not found
         else:
             raise  # reraises error for frontend
-
-async def cardlist_delete(request: Request, id: str):
-    id = "cardlist_" + id
-    pk = id
-    await request.app.boardly_container.delete_item(id, partition_key=pk)
-    return "Item successfully deleted!"
 
 async def cardlist_update(request: Request, cardlist_item: CardList):
     # Updates every field in the requested Board to be updated

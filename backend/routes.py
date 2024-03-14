@@ -6,7 +6,7 @@ from dotenv import dotenv_values
 import httpx
 
 from models import User, Board, CardList, Card
-from api import user, login, google, github, cardlist, card, board
+from api import user, login, google, github, cardlist, card, board, delete
 
 # Tags for organizing Swagger UI
 
@@ -63,7 +63,7 @@ async def board_get(request: Request, id: str):
 
 @router.delete("/board/delete", tags=["Board"])
 async def board_delete(request: Request, id: str):
-    await board.board_delete(request, id)
+    await delete.board_delete(request, id)
 
 @router.post("/board/update", response_model=Board, tags=["Board"])
 async def board_update(request: Request, board_item: Board):
@@ -93,7 +93,7 @@ async def card_get(request: Request, id: str):
 
 @router.delete("/card/delete", tags=["Card"])
 async def card_delete(request: Request, id: str):
-    await card.card_delete(request, id)
+    await delete.card_delete(request, id)
 
 @router.post("/card/update", response_model=Card, tags=["Card"])
 async def card_update(request: Request, card_item: Card):
@@ -123,7 +123,7 @@ async def cardlist_get(request: Request, id: str):
 
 @router.delete("/cardlist/delete", tags=["CardList"])
 async def cardlist_delete(request: Request, id: str):
-    await cardlist.cardlist_delete(request, id)
+    await delete.cardlist_delete(request, id)
 
 @router.post("/cardlist/update", response_model=CardList, tags=["CardList"])
 async def cardlist_update(request: Request, cardlist_item: CardList):

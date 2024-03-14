@@ -6,6 +6,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from authlib.integrations.starlette_client import OAuth, OAuthError
 from dotenv import dotenv_values
 from api.user import User, user_get, user_create
+from azure.cosmos.exceptions import CosmosHttpResponseError
 
 config = dotenv_values(".env")
 CLIENT_ID = config["GOOGLE_CLIENT_ID"]
