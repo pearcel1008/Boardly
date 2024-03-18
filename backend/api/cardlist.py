@@ -3,10 +3,11 @@ from fastapi.encoders import jsonable_encoder
 from models import Board, CardList, Card
 from api.board import board_get
 from typing import List
+from uuid import uuid4
 from azure.cosmos.exceptions import CosmosHttpResponseError
 
 async def cardlist_create(request: Request, cardlist_item: CardList):
-    cardlist_item.id = "cardlist_" + cardlist_item.id
+    cardlist_item.id = "cardlist_" + str(uuid.uuid4())
     # update boards's cardlists list
     parent_item = await board_get(request, cardlist_item.parent_id)
     if parent_item['cardlists'] is None:
@@ -65,11 +66,11 @@ async def cardlist_get_boards(request: Request, board_id: str) -> List[CardList]
 
 # Won't need to call cardlists like this
 
-async def cardlist_get_all(request: Request) -> List[CardList]:
+""" async def cardlist_get_all(request: Request) -> List[CardList]:
     cardlists = []
     query = "SELECT * FROM c WHERE c.id LIKE 'cardlist_%'"
     async for cardlist in request.app.boardly_container.query_items(
         query=query
     ):
         cardlists.append(cardlist)
-    return cardlists
+    return cardlists """

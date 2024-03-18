@@ -39,7 +39,7 @@ async def cardlist_delete(request: Request, id: str):
     deleted_order = deleted_cardlist['order']
     for card in cards:
         await card_delete(request, card)
-    # remove from parent cardlist
+    # remove from parent board
     parent_item = await board_get(request, deleted_cardlist['parent_id'])
     parent_item['cardlists'].remove(id.split("cardlist_", 1)[-1])
     parent_item_dict = jsonable_encoder(parent_item)
@@ -53,7 +53,7 @@ async def cardlist_delete(request: Request, id: str):
         if cardlist_item['order'] > deleted_order:
             new_val = cardlist_item['order'] - 1
             await update_cardlist_field(request, cardlist_item['id'], "order", new_val)
-    # remove card from database
+    # remove cardlist from database
     await request.app.boardly_container.delete_item(id, partition_key=pk)
     return "Item successfully deleted!"
 

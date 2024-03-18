@@ -3,10 +3,11 @@ from fastapi.encoders import jsonable_encoder
 from models import Board, CardList, Card
 from api.cardlist import cardlist_get
 from typing import List
+from uuid import uuid4
 from azure.cosmos.exceptions import CosmosHttpResponseError
 
 async def card_create(request: Request, card_item: Card):
-    card_item.id = "card_" + card_item.id
+    card_item.id = "card_" + str(uuid.uuid4())
     # update cardlist's cards list
     parent_item = await cardlist_get(request, card_item.parent_id)
     if parent_item['cards'] is None:
@@ -63,17 +64,6 @@ async def card_get_cardlists(request: Request, cardlist_id: str) -> List[Card]:
                 _cards.append(card)
     return _cards
 
-# Won't need to call cards like this
-
-async def card_get_all(request: Request) -> List[Card]:
-    cards = []
-    query = "SELECT * FROM c WHERE c.id LIKE 'card_%'"
-    async for card in request.app.boardly_container.query_items(
-        query=query
-    ):
-        cards.append(card)
-    return cards
-
 # list move will be like the "within same list" part
 # Edge Case 1: Moving first card in a list (All cards need adjustments if moving list-to-list; if moving within a list then the cards between old position and new position need to be shifted up)
     # Separate if for moving 1st card within a list
@@ -83,9 +73,9 @@ async def card_move(request: Request, card_id: str, old_list_id: str, new_list_i
     # get the card being moved
     # get all the cards in old_list_id
     # Within same list:
-        # if target_position is not None:
+        # if new_list_id is none:
             # set card's postion to target_position
-            # for cards with position == moving_card's and id != moving_card's, increase order field
+            # for cards with position >= moving_card's and id != moving_card's, increase order field
                 # update each card in DB (card_update_field?)
             # update moving_card in DB
             # DO NOT NEED TO UPDATE THE CURRENT LIST AT ALL BC IT DOESN'T GAF ABOUT CARDS' ORDERS
@@ -97,3 +87,14 @@ async def card_move(request: Request, card_id: str, old_list_id: str, new_list_i
                 # remove from cardlist's list of cards
             # add card to new list in target position 
     return {"message": "Card moved successfully!"}
+
+# Won't need to call cards like this
+"""
+async def card_get_all(request: Request) -> List[Card]:
+    cards = []
+    query = "SELECT * FROM c WHERE c.id LIKE 'card_%'"
+    async for card in request.app.boardly_container.query_items(
+        query=query
+    ):
+        cards.append(card)
+    return cards """

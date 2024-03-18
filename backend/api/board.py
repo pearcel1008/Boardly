@@ -4,13 +4,14 @@ from fastapi.encoders import jsonable_encoder
 from models import User, Board, CardList, Card
 from api.user import user_get, user_update
 from typing import List
+from uuid import uuid4
 from azure.cosmos.exceptions import CosmosHttpResponseError
 
 # Update CardLists
 # Update Order (Instead of updating the entire board?)
 
 async def board_create(request: Request, board_item: Board):
-    board_item.id = "board_" + board_item.id
+    board_item.id = "board_" + str(uuid.uuid4())
     board_item.members.append(board_item.parent_id)
     # update user's board_member list
     parent_item = await user_get(request, board_item.parent_id)
@@ -47,7 +48,7 @@ async def board_update(request: Request, board_item: Board):
     return await request.app.boardly_container.replace_item(board_item.id, existing_item_dict)
 
 async def update_board_field(request: Request, board_id: str, field_name: str, new_value):
-    existing_board = await request.app.boardly_container.read_item(board_id, partition_key = card_id)
+    existing_board = await request.app.boardly_container.read_item(board_id, partition_key = board_id)
     existing_board[field_name] = new_value
     existing_board_dict = jsonable_encoder(existing_board)
     await request.app.boardly_container.replace_item(board_id, existing_board_dict)
