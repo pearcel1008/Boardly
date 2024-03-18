@@ -4,7 +4,6 @@ from fastapi.encoders import jsonable_encoder
 from passlib.context import CryptContext  # Use passlib for password hashing
 from azure.cosmos.exceptions import CosmosHttpResponseError
 
-# Create a CryptContext instance
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 async def cred_get(request: Request, email: str, password: str):

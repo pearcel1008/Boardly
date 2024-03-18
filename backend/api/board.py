@@ -7,9 +7,6 @@ from typing import List
 from uuid import uuid4
 from azure.cosmos.exceptions import CosmosHttpResponseError
 
-# Update CardLists
-# Update Order (Instead of updating the entire board?)
-
 async def board_create(request: Request, board_item: Board):
     board_item.id = "board_" + str(uuid.uuid4())
     board_item.members.append(board_item.parent_id)
@@ -67,14 +64,3 @@ async def board_get_users(request: Request, user_id: str) -> List[Board]:
             ):
                 boards.append(board)
     return boards
-
-# Won't need to ever call boards like this
-
-""" async def board_get_all(request: Request) -> List[Board]:
-    boards = []
-    query = "SELECT * FROM c WHERE c.id LIKE 'board_%'"
-    async for board in request.app.boardly_container.query_items(
-        query=query
-    ):
-        boards.append(board)
-    return boards """

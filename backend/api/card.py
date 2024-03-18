@@ -55,7 +55,7 @@ async def card_get_cardlists(request: Request, cardlist_id: str) -> List[Card]:
     cardlist_item = await cardlist_get(request, cardlist_id)
     # grab individual boards
     cardlist_dict = jsonable_encoder(cardlist_item)
-    cardlist_cards = user_dict['cards']
+    cardlist_cards = cardlist_dict['cards']
     for card_id in cardlist_cards:
             query = f"SELECT * FROM c WHERE STARTSWITH(c.id, 'card_{card_id}')"
             async for card in request.app.boardly_container.query_items(
@@ -87,14 +87,3 @@ async def card_move(request: Request, card_id: str, old_list_id: str, new_list_i
                 # remove from cardlist's list of cards
             # add card to new list in target position 
     return {"message": "Card moved successfully!"}
-
-# Won't need to call cards like this
-"""
-async def card_get_all(request: Request) -> List[Card]:
-    cards = []
-    query = "SELECT * FROM c WHERE c.id LIKE 'card_%'"
-    async for card in request.app.boardly_container.query_items(
-        query=query
-    ):
-        cards.append(card)
-    return cards """

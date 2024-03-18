@@ -63,14 +63,3 @@ async def cardlist_get_boards(request: Request, board_id: str) -> List[CardList]
             ):
                 _cardlists.append(cardlist)
     return _cardlists
-
-# Won't need to call cardlists like this
-
-""" async def cardlist_get_all(request: Request) -> List[CardList]:
-    cardlists = []
-    query = "SELECT * FROM c WHERE c.id LIKE 'cardlist_%'"
-    async for cardlist in request.app.boardly_container.query_items(
-        query=query
-    ):
-        cardlists.append(cardlist)
-    return cardlists """
