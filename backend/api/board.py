@@ -47,12 +47,10 @@ async def board_update(request: Request, board_item: Board):
     return await request.app.boardly_container.replace_item(board_item.id, existing_item_dict)
 
 async def update_board_field(request: Request, board_id: str, field_name: str, new_value):
-    existing_board = await request.app.boardly_container.read_item("board_" + board_id, partition_key = "board_" + board_id)
-    if hasattr(existing_board, field_name):
-        setattr(existing_board, field_name, new_value)
-    else:
-        return {"error": f"Field '{field_name}' does not exist in the board model"}
-    await request.app.boardly_container.replace_item(board_id, existing_board)
+    existing_board = await request.app.boardly_container.read_item(board_id, partition_key = card_id)
+    existing_board[field_name] = new_value
+    existing_board_dict = jsonable_encoder(existing_board)
+    await request.app.boardly_container.replace_item(board_id, existing_board_dict)
     return {"message": f"Field '{field_name}' updated successfully"}
 
 async def board_get_users(request: Request, user_id: str) -> List[Board]:

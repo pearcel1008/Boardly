@@ -44,12 +44,10 @@ async def user_update(request: Request, user_item: User):
     return await request.app.boardly_container.replace_item(user_item.id, existing_item_dict)
 
 async def update_user_field(request: Request, user_id: str, field_name: str, new_value):
-    existing_user = await request.app.boardly_container.read_item("user_" + user_id, partition_key = "user_" + user_id)
-    if hasattr(existing_user, field_name):
-        setattr(existing_user, field_name, new_value)
-    else:
-        return {"error": f"Field '{field_name}' does not exist in the board model"}
-    await request.app.boardly_container.replace_item(board_id, existing_board)
+    existing_user = await request.app.boardly_container.read_item(user_id, partition_key = user_id)
+    existing_user[field_name] = new_value
+    existing_user_dict = jsonable_encoder(existing_user)
+    await request.app.boardly_container.replace_item(user_id, existing_user_dict)
     return {"message": f"Field '{field_name}' updated successfully"}
 
 # Will be used for inviting users to boards

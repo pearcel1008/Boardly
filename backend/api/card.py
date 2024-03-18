@@ -42,12 +42,10 @@ async def card_update(request: Request, card_item: Card):
     return await request.app.boardly_container.replace_item(card_item.id, existing_item_dict)
 
 async def update_card_field(request: Request, card_id: str, field_name: str, new_value):
-    existing_card = await request.app.boardly_container.read_item(card_id, partition_key=card_id)
-    if hasattr(existing_card, field_name):
-        setattr(existing_card, field_name, new_value)
-    else:
-        return {"error": f"Field '{field_name}' does not exist in the card model"}
-    await request.app.boardly_container.replace_item(card_id, existing_card)
+    existing_card = await request.app.boardly_container.read_item(card_id, partition_key = card_id)
+    existing_card[field_name] = new_value
+    existing_card_dict = jsonable_encoder(existing_card)
+    await request.app.boardly_container.replace_item(card_id, existing_card_dict)
     return {"message": f"Field '{field_name}' updated successfully"}
 
 # gets all cards for a particular cardlist
@@ -75,3 +73,27 @@ async def card_get_all(request: Request) -> List[Card]:
     ):
         cards.append(card)
     return cards
+
+# list move will be like the "within same list" part
+# Edge Case 1: Moving first card in a list (All cards need adjustments if moving list-to-list; if moving within a list then the cards between old position and new position need to be shifted up)
+    # Separate if for moving 1st card within a list
+# Edge Case 2: Moving last card in a list (no adjustments to old list needed if moving list-to-list)
+
+async def card_move(request: Request, card_id: str, old_list_id: str, new_list_id: str = None, target_position: int = None):
+    # get the card being moved
+    # get all the cards in old_list_id
+    # Within same list:
+        # if target_position is not None:
+            # set card's postion to target_position
+            # for cards with position == moving_card's and id != moving_card's, increase order field
+                # update each card in DB (card_update_field?)
+            # update moving_card in DB
+            # DO NOT NEED TO UPDATE THE CURRENT LIST AT ALL BC IT DOESN'T GAF ABOUT CARDS' ORDERS
+
+    # To another list:
+        # if new_list_id is not None:
+            # remove card from old list
+                # update cards below old card (order - 1)
+                # remove from cardlist's list of cards
+            # add card to new list in target position 
+    return {"message": "Card moved successfully!"}

@@ -107,6 +107,10 @@ async def update_card_field(request: Request, card_id: str, field_name: str, new
 async def card_get_cardlists(request: Request, cardlist_id: str):
     return await card.card_get_cardlists(request, cardlist_id)
 
+@router.post("/card/move", tags=["Card"])
+async def card_move(request: Request, card_id: str, old_list_id: str, new_list_id: str = None, target_position: int = None):
+    return await card.card_move(request, card_id, old_list_id, new_list_id, target_position)
+
 """ @router.get("/card/get/all", response_model=List[Card], tags=["Card"])
 async def card_get_all(request: Request):
     return await card.card_get_all(request) """
