@@ -41,6 +41,7 @@ function Dashboard() {
       <div className="dashboard-content">
         <HStack spacing="4" align="stretch" flexWrap="wrap" justifyContent="center" alignItems="center">
           <Box  w="300px"
+        
                 h="100px"
                 bg="white"
                 boxShadow="0 0 20px rgba(0, 0, 0, 0.2)"
