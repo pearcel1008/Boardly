@@ -71,6 +71,7 @@ function Dashboard() {
           </ModalFooter>
         </ModalContent>
       </Modal>
+      
     </div>
   );
 }
