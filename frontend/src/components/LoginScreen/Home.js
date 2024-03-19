@@ -12,7 +12,6 @@ import {
 import { useTheme } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { FaGithub, FaGoogle } from "react-icons/fa";
-import GoogleButton from './GoogleButton';
 
 const Home = () => {
   const theme = useTheme();
