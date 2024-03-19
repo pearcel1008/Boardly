@@ -159,13 +159,10 @@ const Home = () => {
     </Flex>
   );
 };
-<<<<<<< Updated upstream
 const handleGoogleLogin = () => {
   // Redirect the user to the Google authentication endpoint
   const googleAuthUrl = 'http://localhost:8000/google/login';
   
   window.location.href = googleAuthUrl;
-=======
->>>>>>> Stashed changes
-
+}
 export default Home;
