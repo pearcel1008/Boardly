@@ -4,7 +4,7 @@ from fastapi.encoders import jsonable_encoder
 from models import User, Board, CardList, Card
 from api.user import user_get, user_update
 from typing import List
-from uuid import uuid4
+import uuid
 from azure.cosmos.exceptions import CosmosHttpResponseError
 
 async def board_create(request: Request, board_item: Board):
@@ -37,7 +37,7 @@ async def board_get(request: Request, id: str):
 
 async def board_update(request: Request, board_item: Board):
     # Updates every field in the requested Board to be updated
-    existing_item = await request.app.boardly_container.read_item(board_item.id, partition_key = board_item.id)
+    existing_item = await request.app.boardly_container.read_item(board_item['id'], partition_key = board_item['id'])
     existing_item_dict = jsonable_encoder(existing_item)
     update_dict = jsonable_encoder(board_item)
     for (k) in update_dict.keys():

@@ -42,3 +42,6 @@ Click the dropdown for a given API, click Try It Out, click execute, grab the UR
 
 ## Contibuting 
 Create a fork of the repository. From your fork, you can work on your main branch or create sub-branches for functionality. Submit pull requests to main branch, then merge if you don't want a code review.  
+
+## Known Issues
+- MSYS2 gcc causes errors with installing backend dependencies 
