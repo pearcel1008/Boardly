@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { VStack, Text, Divider, Link, Box, HStack, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure, Input, Flex, bgGradient, Center, Heading } from '@chakra-ui/react';
 import TopBar from '../topbar/Topbar';
 import { useNavigate } from 'react-router-dom';
@@ -94,17 +94,14 @@ function Dashboard() {
 
   const handleBoardClick = (boardId) => {
     // Go into card logic
+    // WE NEED TO CREATE LOGIC FOR EACH BOARD WITH SPECIFIC ID
     console.log("Clicked board id:", boardId);
+    navigate(`/board1`)
   };  
 
   useEffect(() => {
     handleShowBoard(); // Fetch data when component mounts
   }, []);
-  
-  const navigateToBoard = () => {
-    // Navigate to board
-    navigate('/board1');
-  }
 
   return (
     <Flex className="dashboard-container"  bgGradient='linear(to-tl, #211938, #271c4d )'>
@@ -144,19 +141,18 @@ function Dashboard() {
       <Flex className="dashboard-content" >
         <HStack spacing="4" align="stretch" flexWrap="wrap" justifyContent="center" alignItems="center">
         {displayBoards.map((board, index) => (
-          <Box key={index} borderWidth="1px" borderRadius="lg" p={4} m={2} onClick={() => handleBoardClick(board.id)}>
-            <Link fontWeight="bold">{board.title}</Link>
-          <Box  className='cursor-pointer  text-white py-2'
+          <Box  key={index}
+                className='cursor-pointer  text-white py-2'
                 w="300px"
                 h="100px"
                 bg={theme.colors.brand.menubutton}
                 boxShadow="0 0 20px rgba(0, 0, 0, 0.3)"
                 borderRadius="md"
-                onClick={navigateToBoard}
                 _hover={{bg: theme.colors.brand.ultraviolet, color: theme.colors.brand.mauve}}
                 _active={{bg: theme.colors.brand.ultraviolet, color: 'white', borderColor: theme.colors.brand.ultraviolet}}
+                onClick={() => handleBoardClick(board.id)}
             >
-            <Heading size='sm'>Board 1</Heading>
+            <Heading size='sm'>{board.title}</Heading>
           </Box>
         ))}
         </HStack>
