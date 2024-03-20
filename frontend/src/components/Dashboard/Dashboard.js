@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { VStack, Text, Divider, Link, Box, HStack, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure, Input } from '@chakra-ui/react';
+import React, { useState } from 'react';
+import { VStack, Text, Divider, Link, Box, HStack, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure, Input, Flex, bgGradient, Center, Heading } from '@chakra-ui/react';
 import TopBar from '../topbar/Topbar';
+import { useNavigate } from 'react-router-dom';
+import { useTheme } from '@emotion/react';
+import { AddIcon } from '@chakra-ui/icons';
 
 function Dashboard() {
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -8,6 +11,8 @@ function Dashboard() {
   const [formData, setFormData] = useState({
     title: '',
   });
+  const theme = useTheme();
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -95,33 +100,67 @@ function Dashboard() {
   useEffect(() => {
     handleShowBoard(); // Fetch data when component mounts
   }, []);
+  
+  const navigateToBoard = () => {
+    // Navigate to board
+    navigate('/board1');
+  }
 
   return (
-    <div className="dashboard-container">
+    <Flex className="dashboard-container"  bgGradient='linear(to-tl, #211938, #271c4d )'>
       <div className="App-header">
         <TopBar />
       </div>
-      <div className="dashboard-sidebar">
+      <Flex className="dashboard-sidebar h-full w-1/6 text-white justify-center py-20 drop-shadow-md" bg={theme.colors.brand.menubutton}>
         <VStack spacing="4" align="stretch">
-          <Text fontSize="lg" fontWeight="bold">
-            Dashboard
-          </Text>
-          <Divider />
-          <Link>Boards</Link>
-          <Link as="button" onClick={onOpen}>Create</Link>
+            <Button className='' onClick={onOpen}
+              bg={isOpen ? theme.colors.brand.ultraviolet : theme.colors.brand.semiprimary} 
+              color={isOpen ? 'white' : 'white'} 
+              borderColor={isOpen ? theme.colors.brand.spacecadet : 'initial'} 
+              _hover={{
+                bg: theme.colors.brand.ultraviolet,
+                color: theme.colors.brand.mauve,
+                borderColor: theme.colors.brand.spacecadet,
+            }}>
+            Create Board
+            <AddIcon className='ml-2' boxSize={3}/>
+            </Button>
           <Divider/>
-          <Link>Archives</Link>
+          <Button className=''
+              bg={theme.colors.brand.menubutton} 
+              color={'white'} 
+              borderColor={theme.colors.brand.spacecadet} 
+              _hover={{
+                bg: theme.colors.brand.ultraviolet,
+                color: theme.colors.brand.mauve,
+                borderColor: theme.colors.brand.spacecadet,
+                }}
+                _active={{bg: theme.colors.brand.ultraviolet, color: 'white', borderColor: theme.colors.brand.ultraviolet}}
+            >
+            Archives
+            </Button>
         </VStack>
-      </div>
-      <div className="dashboard-content">
+      </Flex>
+      <Flex className="dashboard-content" >
         <HStack spacing="4" align="stretch" flexWrap="wrap" justifyContent="center" alignItems="center">
         {displayBoards.map((board, index) => (
           <Box key={index} borderWidth="1px" borderRadius="lg" p={4} m={2} onClick={() => handleBoardClick(board.id)}>
             <Link fontWeight="bold">{board.title}</Link>
+          <Box  className='cursor-pointer  text-white py-2'
+                w="300px"
+                h="100px"
+                bg={theme.colors.brand.menubutton}
+                boxShadow="0 0 20px rgba(0, 0, 0, 0.3)"
+                borderRadius="md"
+                onClick={navigateToBoard}
+                _hover={{bg: theme.colors.brand.ultraviolet, color: theme.colors.brand.mauve}}
+                _active={{bg: theme.colors.brand.ultraviolet, color: 'white', borderColor: theme.colors.brand.ultraviolet}}
+            >
+            <Heading size='sm'>Board 1</Heading>
           </Box>
         ))}
         </HStack>
-      </div>
+      </Flex>
 
       {/* Modal for Creating Board */}
       <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose}>
@@ -144,7 +183,7 @@ function Dashboard() {
         </ModalContent>
       </Modal>
       
-    </div>
+    </Flex>
   );
 }
 

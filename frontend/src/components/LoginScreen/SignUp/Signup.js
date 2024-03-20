@@ -5,10 +5,12 @@ import {
   Flex,
   Heading,
   Input,
-  Stack
+  Stack,
+  Divider
 } from '@chakra-ui/react';
 import { useTheme } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
+import Topbar from '../../topbar/Topbar';
 
 const SignUpForm = () => {
   const [formData, setFormData] = useState({
@@ -74,10 +76,14 @@ const SignUpForm = () => {
   console.log(theme.colors);
 
   return (
+    <Flex className="signup-container" minHeight="100vh" width="full" align="center" justifyContent="center" bg={theme.colors.brand.oxford}>
+      <div className="App-header">
+        <Topbar />
+      </div>
     <Flex minHeight="100vh" width="full" align="center" justifyContent="center" bg={theme.colors.brand.oxford}>
       <Stack spacing={4} width="300px" margin="0 auto">
         <Box mb={8}>
-          <Heading color="white">Create your Account</Heading>
+          <Heading color="white">First time?</Heading>
         </Box>
           <Input
             placeholder="First Name"
@@ -87,6 +93,8 @@ const SignUpForm = () => {
             name="firstName"
             value={formData.firstName} 
             onChange={handleChange} required
+            _focus={{bg: 'gray.200'}}
+            color='gray.600'
           />
           <Input
             placeholder="Last Name"
@@ -96,6 +104,8 @@ const SignUpForm = () => {
             name="lastName"
             value={formData.lastName} 
             onChange={handleChange} required
+            _focus={{bg: 'gray.200'}}
+            color='gray.600'
           />
           <Input
             placeholder="Email"
@@ -105,6 +115,8 @@ const SignUpForm = () => {
             name="email"
             value={formData.email} 
             onChange={handleChange} required
+            _focus={{bg: 'gray.200'}}
+            color='gray.600'
           />
           <Input
             placeholder="Password"
@@ -114,10 +126,12 @@ const SignUpForm = () => {
             name="password"
             value={formData.password} 
             onChange={handleChange} required
+            _focus={{bg: 'gray.200'}}
+            color='gray.600'
           />
           <Button
-            bg={theme.colors.brand.vacuum}
-            color={theme.colors.brand.mauve}
+            bg={theme.colors.brand.primary}
+            color={theme.colors.brand.vacuum}
             type="submit"
             size="lg"
             width="full"
@@ -125,10 +139,16 @@ const SignUpForm = () => {
               handleSubmit();
               navigate("/")
             }}
+            _hover={{bg: theme.colors.brand.primaryhover, color: theme.colors.brand.vacuum}}
           >
             Sign Up
           </Button>
+          <Divider />
+          <Flex justifyContent="center" color={theme.colors.brand.primary}>
+              Having issues? Don't worry, we have no support team.
+          </Flex>
         </Stack>
+    </Flex>
     </Flex>
   );
 };

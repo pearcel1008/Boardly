@@ -94,6 +94,8 @@ const Home = () => {
             value={formData.email}
             onChange={handleChange}
             name="email"
+            _focus={{bg: 'gray.200'}}
+            color='gray.600'
           />
           <Input
             placeholder="Password"
@@ -103,14 +105,17 @@ const Home = () => {
             value={formData.password}
             onChange={handleChange}
             name="password"
+            _focus={{bg: 'gray.200'}}
+            color='gray.600'
           />
           <Button
-            bg={theme.colors.brand.vacuum}
-            color={theme.colors.brand.mauve}
+            bg={theme.colors.brand.primary}
+            color={theme.colors.brand.vacuum}
             type="submit"
             size="lg"
             width="full"
             onClick={handleLogin}
+            _hover={{bg: theme.colors.brand.primaryhover, color: theme.colors.brand.vacuum}}
           >
             Login
           </Button>
@@ -125,6 +130,7 @@ const Home = () => {
             size="lg"
             width="full"
             onClick={handleLoginGitHub}
+            _hover={{bg: theme.colors.brand.primaryhover, color: theme.colors.brand.vacuum}}
           >
             Sign in with GitHub
           </Button>
@@ -137,6 +143,7 @@ const Home = () => {
             size="lg"
             width="full"
             onClick={handleGoogleLogin}
+            _hover={{bg: theme.colors.brand.primaryhover, color: theme.colors.brand.vacuum}}
           >
             Sign in with Google
           </Button>
@@ -151,6 +158,7 @@ const Home = () => {
             onClick={() => {
               navigate("/signup")
             }}
+            _hover={{bg: theme.colors.brand.primaryhover, color: theme.colors.brand.vacuum}}
           >
             Sign Up
           </Button>
