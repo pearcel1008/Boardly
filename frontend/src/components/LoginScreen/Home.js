@@ -59,8 +59,9 @@ const Home = () => {
         password: ''
       });
 
-//direct to dashboard page if successful(?) 
-      window.location.href = '/dashboard'; 
+      //direct to dashboard page if successful
+      window.location.href = `http://localhost:3000/dashboard?user_id=${email}`; 
+      navigate('/dashboard');
       // Handle any further actions after successful login, such as redirecting to another page
     } catch (error) {
       console.error('Error during login:', error);

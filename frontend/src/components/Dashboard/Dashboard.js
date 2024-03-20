@@ -58,6 +58,8 @@ function Dashboard() {
     } catch (error) {
       console.error('Error creating board:', error);
     }
+    handleShowBoard();
+    onClose();
   };
 
   const handleShowBoard = async (e) => {
@@ -94,9 +96,11 @@ function Dashboard() {
 
   const handleBoardClick = (boardId) => {
     // Go into card logic
-    // WE NEED TO CREATE LOGIC FOR EACH BOARD WITH SPECIFIC ID
-    console.log("Clicked board id:", boardId);
-    navigate(`/board1`)
+    var parts = boardId.split('_');
+    const ID = parts[1];
+    console.log(ID);
+    console.log("Clicked board id:", ID);
+    navigate(`/board1`, { state: { ID } });
   };  
 
   useEffect(() => {
