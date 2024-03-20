@@ -69,20 +69,43 @@ async def card_get_cardlists(request: Request, cardlist_id: str) -> List[Card]:
     # Separate if for moving 1st card within a list
 # Edge Case 2: Moving last card in a list (no adjustments to old list needed if moving list-to-list)
 
-async def card_move(request: Request, card_id: str, old_list_id: str, new_list_id: str = None, target_position: int = None):
+async def card_move(request: Request, card_id: str, old_list_id: str, new_list_id: str = None, target_position: int = None): # old_list can be removed and instead use parent_id!
     moving_card = await card_get(request, card_id)
     moving_card_pos = moving_card['order']
     old_list = await cardlist_get(request, old_list_id)
     # Within same list:
     if new_list_id is None and target_position is not None:
-        # set moving_card's postion to target_position
         await update_card_field(request, "card_" + card_id, "order", target_position)
-            # for cards with position >= moving_card's and id != moving_card's, increase order field
+        # stuff
         for neighbor in old_list['cards']:
             neighbor = await card_get(request, neighbor)
             if neighbor['id'] != moving_card['id']:
-                if moving_card_pos < neighbor['order'] <= target_position: # error here - card being moved shouldn't enter this statement
-                    print("I must move!" + neighbor['title'])
-                    await update_card_field(request, neighbor['id'], "order", neighbor['order'] - 1)
-    
+                if target_position == 0:
+                    if moving_card_pos > neighbor['order'] >= target_position:
+                        await update_card_field(request, neighbor['id'], "order", neighbor['order'] + 1)
+                else: 
+                    if moving_card_pos < neighbor['order'] <= target_position: 
+                        await update_card_field(request, neighbor['id'], "order", neighbor['order'] - 1)
+    # List-to-list:
+    elif new_list_id is not None and target_position is not None:
+        # add card to new list
+        new_list = await cardlist_get(request, new_list_id)
+        new_list['cards'].append(card_id)
+        await update_card_field(request, "cardlist_" + new_list_id, "cards", new_list['cards'])
+        # remove card from old list
+        old_list['cards'].remove(card_id)
+        await update_card_field(request, "cardlist_" + old_list_id, "cards", old_list['cards'])
+        await update_card_field(request, "card_" + card_id, "order", target_position)
+        await update_card_field(request, "card_" + card_id, "parent_id", new_list_id)
+        # reordering logic - no gap to fill, so just wanna move everything >= target down
+        for neighbor in new_list['cards']:
+            neighbor = await card_get(request, neighbor)
+            if neighbor['id'] != moving_card['id']:
+                if neighbor['order'] >= target_position:
+                    await update_card_field(request, neighbor['id'], "order", neighbor['order'] + 1)
+        # for old list reordering, shift everything up to close the gap:
+        for neighbor in old_list['cards']:
+            neighbor = await card_get(request, neighbor)
+            if neighbor['order'] > moving_card_pos:
+                await update_card_field(request, neighbor['id'], "order", neighbor['order'] - 1)
     return {"message": "Card moved successfully!"}
