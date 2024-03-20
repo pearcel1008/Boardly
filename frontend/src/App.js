@@ -8,6 +8,7 @@ import {customTheme as theme} from './theme.js';
 import { BrowserRouter as Router, Routes, Route, Switch } from 'react-router-dom';
 import SignUpForm from './components/LoginScreen/SignUp/Signup';
 import Dashboard from './components/Dashboard/Dashboard'
+import Board from './components/Board/Board'
 function App() {
   return (
     <AuthProvider>
@@ -16,7 +17,8 @@ function App() {
             <Routes>
               <Route path="/" exact element={<><header className="App-header"><Topbar/><Home/></header></>} /> {/* Home page route */}
               <Route path="/signup" exact element={<><SignUpForm /></>} /> {/* Signup page route */}
-              <Route path="/dashboard" exact element={<><Dashboard /></>} /> {/* Dashboard page route */}  
+              <Route path="/dashboard" exact element={<><Dashboard /></>} /> {/* Dashboard page route */} 
+              <Route path="/board1" exact element={<><Board /></>} /> {/* Board page route */}
             </Routes>
           <Container>
           </Container>
