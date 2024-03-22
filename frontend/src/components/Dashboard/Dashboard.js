@@ -100,7 +100,7 @@ function Dashboard() {
     const ID = parts[1];
     console.log(ID);
     console.log("Clicked board id:", ID);
-    navigate(`/board1`, { state: { ID } });
+    navigate(`/board?board_id=${ID}`, { state: { ID } });
   };  
 
   useEffect(() => {
