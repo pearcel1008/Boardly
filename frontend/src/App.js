@@ -18,7 +18,7 @@ function App() {
               <Route path="/" exact element={<><header className="App-header"><Topbar/><Home/></header></>} /> {/* Home page route */}
               <Route path="/signup" exact element={<><SignUpForm /></>} /> {/* Signup page route */}
               <Route path="/dashboard" exact element={<><Dashboard /></>} /> {/* Dashboard page route */} 
-              <Route path="/board1" exact element={<><Board /></>} /> {/* Board page route */}
+              <Route path="/board" exact element={<><Board /></>} /> {/* Board page route */}
             </Routes>
           <Container>
           </Container>
