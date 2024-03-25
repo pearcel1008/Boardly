@@ -10,6 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 from routes import router as router
 from api.google import router as google_router 
+import openai
 
 config = dotenv_values(".env")
 app = FastAPI(title="Boardly Endpoints")
@@ -42,7 +43,6 @@ async def startup_db_client():
     app.cosmos_client = CosmosClient(config["URI"], config["KEY"])
     await get_or_create_db(database_name)
     await get_or_create_container(container_name)
-    # Connect to OpenAI
 
 async def get_or_create_db(db_name):
     try:

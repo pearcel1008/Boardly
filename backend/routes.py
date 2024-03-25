@@ -6,7 +6,7 @@ from dotenv import dotenv_values
 import httpx
 
 from models import User, Board, CardList, Card
-from api import user, login, google, github, cardlist, card, board, delete
+from api import user, login, google, github, cardlist, card, board, delete, openapi
 
 # Tags for organizing Swagger UI
 
@@ -154,3 +154,17 @@ async def cred_get(request: Request, email: str, password: str):
     return await login.cred_get(request, email, password)
 
 # Google Login held within google.py
+
+# OpenAI
+
+@router.post("/openapi/dejargon", tags=["OpenAI APIs"])
+async def translate_jargon(request: Request, description: str):
+    return await openapi.translate_jargon(request, description)
+
+@router.post("/openapi/title", tags=["OpenAI APIs"])
+async def suggest_title(request: Request, description: str):
+    return await openapi.suggest_title(request, description)
+
+@router.post("/openapi/tags", tags=["OpenAI APIs"])
+async def generate_tags(request: Request, description: str):
+    return await openapi.generate_tags(request, description)

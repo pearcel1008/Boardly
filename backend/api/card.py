@@ -64,10 +64,7 @@ async def card_get_cardlists(request: Request, cardlist_id: str) -> List[Card]:
                 _cards.append(card)
     return _cards
 
-# list move will be like the "within same list" part
-# Edge Case 1: Moving first card in a list (All cards need adjustments if moving list-to-list; if moving within a list then the cards between old position and new position need to be shifted up)
-    # Separate if for moving 1st card within a list
-# Edge Case 2: Moving last card in a list (no adjustments to old list needed if moving list-to-list)
+# Refactor for maintainability: helper functions
 
 async def card_move(request: Request, card_id: str, old_list_id: str, new_list_id: str = None, target_position: int = None): # old_list can be removed and instead use parent_id!
     moving_card = await card_get(request, card_id)
