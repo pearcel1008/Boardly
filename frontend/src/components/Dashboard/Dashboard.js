@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { VStack, Text, Divider, Link, Box, HStack, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure, Input, Flex, bgGradient, Center, Heading } from '@chakra-ui/react';
+import { VStack, Text, Divider, Link, Box, HStack, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure, Input, Flex, bgGradient, Center, Heading, Icon } from '@chakra-ui/react';
 import TopBar from '../topbar/Topbar';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@emotion/react';
-import { AddIcon } from '@chakra-ui/icons';
+import { AddIcon, CloseIcon } from '@chakra-ui/icons';
 
 function Dashboard() {
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -101,7 +101,31 @@ function Dashboard() {
     console.log(ID);
     console.log("Clicked board id:", ID);
     navigate(`/board?board_id=${ID}`, { state: { ID } });
-  };  
+  }; 
+  
+  const handleDeleteBoard = async (boardID) => {
+    
+    var parts = boardID.split('_');
+    boardID = parts[1];
+    try {
+      const response = await fetch(`http://localhost:8000/boardly/board/delete?id=${boardID}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      console.log('Board deleted successfully:', data);
+      handleShowBoard(); // Refresh cards after deletion
+    } catch (error) {
+      console.error('Error deleting board:', error);
+    }
+  }
 
   useEffect(() => {
     handleShowBoard(); // Fetch data when component mounts
@@ -145,19 +169,34 @@ function Dashboard() {
       <Flex className="dashboard-content" >
         <HStack spacing="4" align="stretch" flexWrap="wrap" justifyContent="center" alignItems="center">
         {displayBoards.map((board, index) => (
-          <Box  key={index}
-                className='cursor-pointer  text-white py-2'
-                w="300px"
-                h="100px"
-                bg={theme.colors.brand.menubutton}
-                boxShadow="0 0 20px rgba(0, 0, 0, 0.3)"
-                borderRadius="md"
-                _hover={{bg: theme.colors.brand.ultraviolet, color: theme.colors.brand.mauve}}
-                _active={{bg: theme.colors.brand.ultraviolet, color: 'white', borderColor: theme.colors.brand.ultraviolet}}
-                onClick={() => handleBoardClick(board.id)}
-            >
+          <Flex position="relative" w="300px" h="100px">
+          <Box
+            key={index}
+            className='cursor-pointer text-white py-2'
+            w="300px"
+            h="100px"
+            bg={theme.colors.brand.menubutton}
+            boxShadow="0 0 20px rgba(0, 0, 0, 0.3)"
+            borderRadius="md"
+            _hover={{ bg: theme.colors.brand.ultraviolet, color: theme.colors.brand.mauve }}
+            _active={{ bg: theme.colors.brand.ultraviolet, color: 'white', borderColor: theme.colors.brand.ultraviolet }}
+            onClick={() => handleBoardClick(board.id)}
+          >
             <Heading size='sm'>{board.title}</Heading>
           </Box>
+          <Icon 
+            as={CloseIcon} 
+            position="absolute" 
+            right="2" 
+            top="2" 
+            w={3} 
+            h={3} 
+            color="white" 
+            _hover={{ color: 'red', transform: 'scale(1.2)' }} 
+            onClick={() => handleDeleteBoard(board.id)}
+          />
+        </Flex>
+        
         ))}
         </HStack>
       </Flex>
