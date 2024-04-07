@@ -9,7 +9,7 @@ import {
 } from '@chakra-ui/react';
 import { useTheme } from '@chakra-ui/react';
 import { FaGithub, FaGoogle, FaArrowLeft } from "react-icons/fa";
-import { ChevronLeftIcon, AddIcon } from '@chakra-ui/icons';
+import { ChevronLeftIcon, AddIcon, CloseIcon } from '@chakra-ui/icons';
 import { useEffect } from 'react';
 import { Cards } from './Cards';
 
@@ -141,6 +141,7 @@ const Board = () => {
         setCardModalOpen(false);
         window.location.reload()
     };
+
     
 
     const handleNavigateDashboard = async (e) => {
@@ -154,6 +155,34 @@ const Board = () => {
         window.location.href = `http://localhost:3000/dashboard?user_id=${userID}`;
         navigate('/dashboard');
     };
+
+    const handleDeleteCardList = async (cardListID) => {
+        // need to figure out how to get cardID from the card
+        // console.log(cardID);
+        var parts = cardListID.split('_');
+        cardListID = parts[1];
+        try {
+            const response = await fetch(`http://localhost:8000/boardly/cardlist/delete?id=${cardListID}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await response.json();
+            console.log('Card list deleted successfully:', data);
+            handleShowCardlists(); // Refresh cards after deletion
+        } catch (error) {
+            console.error('Error deleting card list:', error);
+        }
+    };
+
+
+
     return (
         <Flex className="board-container" bgGradient='linear(to-tl, #211938, #271c4d )' >
             <div className="App-header">
@@ -161,7 +190,7 @@ const Board = () => {
             </div>
             <HStack className="board-header" justifyContent="space-between" alignItems="center">
                 <Button className="my-20 mx-5 text-white" bg='transparent' _hover={{ color: theme.colors.brand.mauve, bg: theme.colors.transparent }} onClick={handleNavigateDashboard}>
-                    <Icon as={ChevronLeftIcon} w={6} h={6} color="white" _hover={{ color: theme.colors.brand.mauve, bg: theme.colors.transparent }}
+                    <Icon as={ChevronLeftIcon} w={6} h={6} color="white" _hover={{ color: theme.colors.brand.mauve, bg: theme.colors.transparent }} 
                     />
                 </Button>
                 <Button className='' onClick={() => onOpen()}
@@ -180,24 +209,25 @@ const Board = () => {
             <Flex className="board-content px-10">
             <HStack spacing="4" align="stretch" flexWrap="wrap" justifyContent="center" alignItems="center">
                   {displayCardlists.map((board, boardIndex) => (
+                      <Flex position="relative" w="300px">
                       <Box
-                          key={boardIndex}
-                          className='cursor-pointer  text-white py-2'
-                          w="300px"
-                          h="auto"
-                          bg={theme.colors.brand.menubutton}
-                          boxShadow="0 0 20px rgba(0, 0, 0, 0.3)"
-                          borderRadius="md"
-                          _hover={{ bg: theme.colors.brand.ultraviolet, color: theme.colors.brand.mauve }}
-                          _active={{ bg: theme.colors.brand.ultraviolet, color: 'white', borderColor: theme.colors.brand.ultraviolet }}
-                          
+                        className='cursor-pointer text-white py-2'
+                        w="300px"
+                        h="auto"
+                        bg={theme.colors.brand.menubutton}
+                        boxShadow="0 0 20px rgba(0, 0, 0, 0.3)"
+                        borderRadius="md"
+                        _hover={{ bg: theme.colors.brand.ultraviolet, color: theme.colors.brand.mauve }}
+                        _active={{ bg: theme.colors.brand.ultraviolet, color: 'white', borderColor: theme.colors.brand.ultraviolet }}
                       >
-                          <Heading size='sm'>{board.title}</Heading>
-                          {/* Render cards within the card list */}
-                          <Cards myCardList={board.id}></Cards>
-                          {/* Button to add a new card */}
-                          <Button onClick={() => { setCardModalOpen(true); setCardListID(board.id) }}>Add Card</Button>
+                        <Heading size='sm'>{board.title}</Heading>
+                        {/* Render cards within the card list */}
+                        <Cards myCardList={board.id}></Cards>
+                        {/* Button to add a new card */}
+                        <Button onClick={() => { setCardModalOpen(true); setCardListID(board.id) }}>Add Card</Button>
                       </Box>
+                      <Icon as={CloseIcon} position="absolute" right="2" top="2" w={3} h={3} color="white" _hover={{ color: 'red', transform: 'scale(1.2)' }} onClick={()=>handleDeleteCardList(board.id)}/>
+                    </Flex>
                   ))}
               </HStack>
             </Flex>
