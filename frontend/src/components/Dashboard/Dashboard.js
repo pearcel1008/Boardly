@@ -3,7 +3,7 @@ import { VStack, Text, Divider, Link, Box, HStack, Button, Modal, ModalOverlay, 
 import TopBar from '../topbar/Topbar';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@emotion/react';
-import { AddIcon, CloseIcon } from '@chakra-ui/icons';
+import { AddIcon, CloseIcon, EditIcon, CheckIcon } from '@chakra-ui/icons';
 
 function Dashboard() {
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -11,6 +11,8 @@ function Dashboard() {
   const [formData, setFormData] = useState({
     title: '',
   });
+  const [editingBoardId, setEditingBoardId] = useState(null);
+  const [editingTitle, setEditingTitle] = useState('');
   const theme = useTheme();
   const navigate = useNavigate();
 
@@ -125,7 +127,32 @@ function Dashboard() {
     } catch (error) {
       console.error('Error deleting board:', error);
     }
-  }
+  };
+
+  const handleEditTitle = async (cardID, newTitle) => {
+    var fieldName = 'title';
+    try {
+        const response = await fetch(`http://localhost:8000/boardly/board/update/field?card_id=${cardID}&field_name=${fieldName}&new_value=${newTitle}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ title: newTitle }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+        console.log('Board title updated successfully:', data);
+        handleShowBoard(); // Refresh cards after updating title
+        setEditingBoardId(null); // Exit edit mode
+        setEditingTitle(''); // Reset editing title
+    } catch (error) {
+        console.error('Error updating board title:', error);
+    }
+};
 
   useEffect(() => {
     handleShowBoard(); // Fetch data when component mounts
@@ -182,7 +209,28 @@ function Dashboard() {
             _active={{ bg: theme.colors.brand.ultraviolet, color: 'white', borderColor: theme.colors.brand.ultraviolet }}
             onClick={() => handleBoardClick(board.id)}
           >
-            <Heading size='sm'>{board.title}</Heading>
+            <Flex direction="row" alignItems="center" paddingLeft={'4.5vw'}>
+                        {editingBoardId !== board.id ? (
+                            <>
+                                <Text fontSize={'xl'} color={'white'} mr={2}>{board.title}</Text>
+                                <Icon as={EditIcon} w={3} h={3} color={'gray'} _hover={{color: 'green', transform: 'scale(1.2)'}}
+                                    onClick={() => { setEditingBoardId(board.id); setEditingTitle(board.title); }} />
+                            </>
+                        ) : (
+                            <>
+                                <Input
+                                    value={editingTitle}
+                                    onChange={(e) => setEditingTitle(e.target.value)}
+                                    size="sm"
+                                    autoFocus
+                                    onBlur={() => handleEditTitle(board.id, editingTitle)}
+                                    onKeyDown={(e) => { if(e.key === 'Enter') { handleEditTitle(board.id, editingTitle); }}}
+                                />
+                                <Icon as={CheckIcon} w={3} h={3} color={'green'} _hover={{color: 'blue', transform: 'scale(1.2)'}}
+                                    onClick={() => handleEditTitle(board.id, editingTitle)} />
+                            </>
+                        )}
+                    </Flex>
           </Box>
           <Icon 
             as={CloseIcon} 
