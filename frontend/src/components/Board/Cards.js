@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { VStack, Text, Divider, Link, Box, HStack, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure, Input, StackDivider, Icon, Textarea, Flex} from '@chakra-ui/react';
-import { CloseIcon } from '@chakra-ui/icons';
+import { CloseIcon, EditIcon, CheckIcon } from '@chakra-ui/icons';
 export const Cards = ({ myCardList }) => {
     // Access myObject here
     console.log(myCardList);
     const [displayCards, setDisplayCards] = useState([]);
+    const [editingCardId, setEditingCardId] = useState(null);
+    const [editingTitle, setEditingTitle] = useState('');
 
     useEffect(() => {
         handleShowCards(); // Fetch data when component mounts
@@ -52,17 +54,67 @@ export const Cards = ({ myCardList }) => {
         }
     };
 
+    const handleEditTitle = async (cardID, newTitle) => {
+        var fieldName = 'title';
+        try {
+            const response = await fetch(`http://localhost:8000/boardly/card/update/field?card_id=${cardID}&field_name=${fieldName}&new_value=${newTitle}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ title: newTitle }),
+            });
+    
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+    
+            const data = await response.json();
+            console.log('Card title updated successfully:', data);
+            handleShowCards(); // Refresh cards after updating title
+            setEditingCardId(null); // Exit edit mode
+            setEditingTitle(''); // Reset editing title
+        } catch (error) {
+            console.error('Error updating card title:', error);
+        }
+    };
+
     return (
         <div>
             {/* Render cards within the card list */}
             {displayCards.map((card, cardIndex) => (
-                <Box key={cardIndex} className="card" p={3} mt={3} bg="white" borderRadius="md">
+             <Box key={cardIndex} className="card" p={3} mt={3} bg="white" borderRadius="md">
                 <Flex direction="column" position="relative">
                     <Icon as={CloseIcon} w={3} h={3} color={'gray'} position="absolute" right={0} top={0} _hover={{color: 'red', transform: 'scale(1.2)'}} onClick={()=>handleDeleteCard(card.id)} />
-                        <Text fontSize={'xl'} color={'black'}>{card.title}</Text>
-                        <Text color={'gray'}>{card.description}</Text>
+                    
+                    {/* Flex container for the title and the edit icon with reduced spacing */}
+                    <Flex direction="row" alignItems="center" paddingLeft={'4.5vw'}>
+                        {editingCardId !== card.id ? (
+                            <>
+                                <Text fontSize={'xl'} color={'black'} mr={2}>{card.title}</Text>
+                                <Icon as={EditIcon} w={3} h={3} color={'gray'} _hover={{color: 'green', transform: 'scale(1.2)'}}
+                                    onClick={() => { setEditingCardId(card.id); setEditingTitle(card.title); }} />
+                            </>
+                        ) : (
+                            <>
+                                <Input
+                                    value={editingTitle}
+                                    onChange={(e) => setEditingTitle(e.target.value)}
+                                    size="sm"
+                                    autoFocus
+                                    onBlur={() => handleEditTitle(card.id, editingTitle)}
+                                    onKeyDown={(e) => { if(e.key === 'Enter') { handleEditTitle(card.id, editingTitle); }}}
+                                />
+                                <Icon as={CheckIcon} w={3} h={3} color={'green'} _hover={{color: 'blue', transform: 'scale(1.2)'}}
+                                    onClick={() => handleEditTitle(card.id, editingTitle)} />
+                            </>
+                        )}
                     </Flex>
-                </Box>
+                    
+                    <Text color={'gray'}>{card.description}</Text>
+                </Flex>
+            </Box>
+         
             ))}
         </div>
     );

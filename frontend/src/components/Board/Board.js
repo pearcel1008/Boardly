@@ -9,7 +9,7 @@ import {
 } from '@chakra-ui/react';
 import { useTheme } from '@chakra-ui/react';
 import { FaGithub, FaGoogle, FaArrowLeft } from "react-icons/fa";
-import { ChevronLeftIcon, AddIcon, CloseIcon } from '@chakra-ui/icons';
+import { ChevronLeftIcon, AddIcon, CloseIcon, EditIcon, CheckIcon } from '@chakra-ui/icons';
 import { useEffect } from 'react';
 import { Cards } from './Cards';
 
@@ -17,6 +17,8 @@ const Board = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [isCardModalOpen, setCardModalOpen] = useState(false);
     const [cardlistID, setCardListID] = useState('');
+    const [editingCardlistId, setEditingCardlistId] = useState(null);
+    const [editingTitle, setEditingTitle] = useState('');
     const theme = useTheme();
     const navigate = useNavigate();
     const location = useLocation();
@@ -181,6 +183,31 @@ const Board = () => {
         }
     };
 
+    const handleEditTitle = async (cardListID, newTitle) => {
+        var fieldName = 'title';
+        try {
+            const response = await fetch(`http://localhost:8000/boardly/card/update/field?card_id=${cardListID}&field_name=${fieldName}&new_value=${newTitle}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ title: newTitle }),
+            });
+    
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+    
+            const data = await response.json();
+            console.log('Cardlist title updated successfully:', data);
+            handleShowCardlists(); // Refresh cards after updating title
+            setEditingCardlistId(null); // Exit edit mode
+            setEditingTitle(''); // Reset editing title
+        } catch (error) {
+            console.error('Error updating cardlist title:', error);
+        }
+    };
+
 
 
     return (
@@ -220,7 +247,28 @@ const Board = () => {
                         _hover={{ bg: theme.colors.brand.ultraviolet, color: theme.colors.brand.mauve }}
                         _active={{ bg: theme.colors.brand.ultraviolet, color: 'white', borderColor: theme.colors.brand.ultraviolet }}
                       >
-                        <Heading size='sm'>{board.title}</Heading>
+                        <Flex direction="row" alignItems="center" paddingLeft={'4.5vw'}>
+                        {editingCardlistId !== board.id ? (
+                            <>
+                                <Text fontSize={'xl'} color={'white'} mr={2}>{board.title}</Text>
+                                <Icon as={EditIcon} w={3} h={3} color={'gray'} _hover={{color: 'green', transform: 'scale(1.2)'}}
+                                    onClick={() => { setEditingCardlistId(board.id); setEditingTitle(board.title); }} />
+                            </>
+                        ) : (
+                            <>
+                                <Input
+                                    value={editingTitle}
+                                    onChange={(e) => setEditingTitle(e.target.value)}
+                                    size="sm"
+                                    autoFocus
+                                    onBlur={() => handleEditTitle(board.id, editingTitle)}
+                                    onKeyDown={(e) => { if(e.key === 'Enter') { handleEditTitle(board.id, editingTitle); }}}
+                                />
+                                <Icon as={CheckIcon} w={3} h={3} color={'green'} _hover={{color: 'blue', transform: 'scale(1.2)'}}
+                                    onClick={() => handleEditTitle(board.id, editingTitle)} />
+                            </>
+                        )}
+                    </Flex>
                         {/* Render cards within the card list */}
                         <Cards myCardList={board.id}></Cards>
                         {/* Button to add a new card */}
