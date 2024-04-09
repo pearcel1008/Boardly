@@ -58,4 +58,29 @@ async def generate_tags(request: Request, description: str):
 
 # This one we should use 
 
-# async def suggest_title(request: Request, description: str):
+async def suggest_title(request: Request, description: str):
+    content = description
+    try:
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            max_tokens=1000,
+            messages=[
+                {"role": "system", "content": "You will be acting as a research assistant."
+                    + "You will suggest titles for kanban boards focusing on clarity and brevity, considering jargon's value.\n"
+                    + "RULES:\n"
+                    + "1. Title should be minimum 3 words, maximum 5 words, should be clear and concise.\n"
+                    + "2. Keep title brief, ideally no longer than the original title, but still be descriptive enough.\n"
+                    + "3. Use jargon if it adds clarity, but ensure it's widely understood.\n"
+                    + "4. Use words that be easily understood by a non software engineer.\n"
+                    + "5. Avoid using overly technical terms or acronyms.\n"
+                    + "6. Ensure to describe each task that is in the title, include and if there is more than one task.\n"
+                    + "7. Make sure that the title is properly formatted.\n"
+                    + "8. Do not exclude any key details when suggesting a new title.\n"
+                    + "9. Only provide one suggestion."
+                },
+                {"role": "user", "content": "Here's the title:\n" + content}
+            ]
+        )
+        return response.choices[0].message.content
+    except Exception as e:
+        return {"error": str(e)}
