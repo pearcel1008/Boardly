@@ -106,7 +106,6 @@ function Dashboard() {
   }; 
   
   const handleDeleteBoard = async (boardID) => {
-    
     var parts = boardID.split('_');
     boardID = parts[1];
     try {
@@ -129,10 +128,10 @@ function Dashboard() {
     }
   };
 
-  const handleEditTitle = async (cardID, newTitle) => {
+  const handleEditTitle = async (boardId, newTitle) => {
     var fieldName = 'title';
     try {
-        const response = await fetch(`http://localhost:8000/boardly/board/update/field?card_id=${cardID}&field_name=${fieldName}&new_value=${newTitle}`, {
+        const response = await fetch(`http://localhost:8000/boardly/board/update/field?board_id=${boardId}&field_name=${fieldName}&new_value=${newTitle}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -213,21 +212,31 @@ function Dashboard() {
                         {editingBoardId !== board.id ? (
                             <>
                                 <Text fontSize={'xl'} color={'white'} mr={2}>{board.title}</Text>
-                                <Icon as={EditIcon} w={3} h={3} color={'gray'} _hover={{color: 'green', transform: 'scale(1.2)'}}
-                                    onClick={() => { setEditingBoardId(board.id); setEditingTitle(board.title); }} />
+                                <Icon as={EditIcon} w={3} h={3} color={'gray'} _hover={{ color: 'green', transform: 'scale(1.2)' }} 
+                                onClick={(event) => {
+                                  event.stopPropagation(); // Stop event propagation here
+                                  setEditingBoardId(board.id);
+                                  setEditingTitle(board.title);
+                                }}
+                              />
                             </>
                         ) : (
                             <>
                                 <Input
-                                    value={editingTitle}
-                                    onChange={(e) => setEditingTitle(e.target.value)}
-                                    size="sm"
-                                    autoFocus
-                                    onBlur={() => handleEditTitle(board.id, editingTitle)}
-                                    onKeyDown={(e) => { if(e.key === 'Enter') { handleEditTitle(board.id, editingTitle); }}}
-                                />
+                                  value={editingTitle}
+                                  onChange={(e) => setEditingTitle(e.target.value)}
+                                  size="sm"
+                                  autoFocus
+                                  onClick={(event) => event.stopPropagation()}
+                                  onBlur={() => handleEditTitle(board.id, editingTitle)}
+                                  onKeyDown={(e) => { if(e.key === 'Enter') { handleEditTitle(board.id, editingTitle); }}}
+                              />
                                 <Icon as={CheckIcon} w={3} h={3} color={'green'} _hover={{color: 'blue', transform: 'scale(1.2)'}}
-                                    onClick={() => handleEditTitle(board.id, editingTitle)} />
+                                    onClick={(event) => { 
+                                      event.stopPropagation();
+                                      setEditingBoardId(board.id);
+                                      setEditingTitle(editingTitle);
+                                      }} />
                             </>
                         )}
                     </Flex>
