@@ -1,6 +1,8 @@
 # Ignore Python virtual environment
 venv/
 
+.env
+
 # Ignore IDE files
 .vscode/
 .idea/
