@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { VStack, Text, Divider, Link, Box, HStack, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure, Input, StackDivider, Icon, Textarea } from '@chakra-ui/react';
 import TopBar from '../topbar/Topbar';
 import { useNavigate, useLocation } from 'react-router-dom';
+import SuggestionsPanel from './SuggestionsPanel'; 
 import {
     Flex,
     Heading,
@@ -208,6 +209,63 @@ const Board = () => {
         }
     };
 
+    const logCardTitles = () => {
+        displayCardlists.forEach(cardList => {
+            console.log("Card List Title:", cardList.title);
+            cardList.cards.forEach(card => {
+                console.log(" - Card Title:", card.title);
+            });
+        });
+    };
+
+
+    const [showSuggestions, setShowSuggestions] = useState(false);
+    const [titleSuggestions, setTitleSuggestions] = useState([]);
+    
+    const toggleSuggestions = () => {
+        setShowSuggestions(!showSuggestions);
+    };
+    
+    const handleSuggestTitle = async () => {
+        try {
+            // Fetch title suggestions from an API
+            const response = await fetchTitleSuggestions(); // Implement fetchTitleSuggestions function
+            const data = await response.json();
+            setTitleSuggestions(data.suggestions); // Assuming the response contains an array of suggestions
+            toggleSuggestions(); // Show the suggestion panel
+        } catch (error) {
+            console.error('Error fetching title suggestions:', error);
+        }
+    };
+    
+    // Function to fetch title suggestions from an API
+    const fetchTitleSuggestions = async () => {
+        try {
+            // Call your API endpoint to get title suggestions
+            // Example: const response = await fetch('YOUR_API_ENDPOINT');
+            // return response;
+        } catch (error) {
+            throw error;
+        }
+    };
+    
+    // "suggest title" button
+    <Button colorScheme='green' onClick={handleSuggestTitle}>Suggest Title</Button>
+
+    
+    //suggestion panel
+    {showSuggestions && (
+        <Box>
+            <Text>Suggestions:</Text>
+            <VStack align="start">
+                {titleSuggestions.map((suggestion, index) => (
+                    <Text key={index}>{suggestion}</Text>
+                ))}
+            </VStack>
+        </Box>
+    )}
+
+
 
 
     return (
@@ -290,6 +348,7 @@ const Board = () => {
                         </Text>
                         <Input name="title" placeholder="Enter cardlist title" value={formData.title} onChange={handleChange} required />
                     </ModalBody>
+                           
                     <ModalFooter>
                         <Button colorScheme='purple' mr={3} onClick={onClose}>
                             Cancel
