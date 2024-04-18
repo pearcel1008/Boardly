@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { VStack, Text, Divider, Link, Box, HStack, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure, Input, StackDivider, Icon, Textarea, Flex} from '@chakra-ui/react';
+import { VStack, Text, Divider, Link, Box, HStack, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure, Input, StackDivider, Icon, Textarea, Flex, Select} from '@chakra-ui/react';
 import { CloseIcon, EditIcon, CheckIcon } from '@chakra-ui/icons';
+
 export const Cards = ({ myCardList }) => {
     // Access myObject here
     console.log(myCardList);
@@ -83,38 +84,45 @@ export const Cards = ({ myCardList }) => {
         <div>
             {/* Render cards within the card list */}
             {displayCards.map((card, cardIndex) => (
-             <Box key={cardIndex} className="card" p={3} mt={3} bg="white" borderRadius="md">
-                <Flex direction="column" position="relative">
-                    <Icon as={CloseIcon} w={3} h={3} color={'gray'} position="absolute" right={0} top={0} _hover={{color: 'red', transform: 'scale(1.2)'}} onClick={()=>handleDeleteCard(card.id)} />
-                    
-                    {/* Flex container for the title and the edit icon with reduced spacing */}
-                    <Flex direction="row" alignItems="center" paddingLeft={'4.5vw'}>
-                        {editingCardId !== card.id ? (
-                            <>
-                                <Text fontSize={'xl'} color={'black'} mr={2}>{card.title}</Text>
-                                <Icon as={EditIcon} w={3} h={3} color={'gray'} _hover={{color: 'green', transform: 'scale(1.2)'}}
-                                    onClick={() => { setEditingCardId(card.id); setEditingTitle(card.title); }} />
-                            </>
-                        ) : (
-                            <>
-                                <Input
-                                    value={editingTitle}
-                                    onChange={(e) => setEditingTitle(e.target.value)}
-                                    size="sm"
-                                    autoFocus
-                                    onBlur={() => handleEditTitle(card.id, editingTitle)}
-                                    onKeyDown={(e) => { if(e.key === 'Enter') { handleEditTitle(card.id, editingTitle); }}}
-                                />
-                                <Icon as={CheckIcon} w={3} h={3} color={'green'} _hover={{color: 'blue', transform: 'scale(1.2)'}}
-                                    onClick={() => handleEditTitle(card.id, editingTitle)} />
-                            </>
-                        )}
+             <Flex key={cardIndex} justifyContent="center" alignItems="center" mt={3}>
+                <Box className="card" p={3} bg="white" borderRadius="md">
+                    <Flex direction="column" position="relative">
+                        <Icon as={CloseIcon} w={3} h={3} color={'gray'} position="absolute" right={0} top={0} _hover={{color: 'red', transform: 'scale(1.2)'}} onClick={()=>handleDeleteCard(card.id)} />
+                        
+                        {/* Flex container for the title, edit icon */}
+                        <Flex direction="column" alignItems="center">
+                            <Flex direction="row" alignItems="center">
+                                {editingCardId !== card.id ? (
+                                    <>
+                                        <Text fontSize={'xl'} color={'black'} mr={2} textAlign="center">{card.title}</Text>
+                                        <Icon as={EditIcon} w={3} h={3} color={'gray'} _hover={{color: 'green', transform: 'scale(1.2)'}}
+                                            onClick={() => { setEditingCardId(card.id); setEditingTitle(card.title); }} />
+                                    </>
+                                ) : (
+                                    <>
+                                        <Input
+                                            value={editingTitle}
+                                            onChange={(e) => setEditingTitle(e.target.value)}
+                                            size="sm"
+                                            autoFocus
+                                            onBlur={() => handleEditTitle(card.id, editingTitle)}
+                                            onKeyDown={(e) => { if(e.key === 'Enter') { handleEditTitle(card.id, editingTitle); }}}
+                                        />
+                                        <Icon as={CheckIcon} w={3} h={3} color={'green'} _hover={{color: 'blue', transform: 'scale(1.2)'}}
+                                            onClick={() => handleEditTitle(card.id, editingTitle)} />
+                                    </>
+                                )}
+                            </Flex>
+                            <Select defaultValue="Select Option" size="sm" mt={2} borderColor="black" color="black">
+                                <option value="dejargon">Dejargon</option>
+                                <option value="suggest_title">Suggest Title</option>
+                            </Select>
+                        </Flex>
+                        
+                        <Text color={'gray'}>{card.description}</Text>
                     </Flex>
-                    
-                    <Text color={'gray'}>{card.description}</Text>
-                </Flex>
-            </Box>
-         
+                </Box>
+            </Flex>
             ))}
         </div>
     );
