@@ -23,6 +23,10 @@ const Board = () => {
     const theme = useTheme();
     const navigate = useNavigate();
     const location = useLocation();
+    const [showSuggestions, setShowSuggestions] = useState(false);
+    const [titleSuggestions, setTitleSuggestions] = useState([]);
+    
+    const [suggestedTitle, setSuggestedTitle] = useState('');
     // Access the boards using location
     const boardId = location.state;
     console.log(boardId.ID); // THIS IS THE BOARD ID FOR API PURPOSES (parent_id is user_id)
@@ -219,53 +223,38 @@ const Board = () => {
     };
 
 
-    const [showSuggestions, setShowSuggestions] = useState(false);
-    const [titleSuggestions, setTitleSuggestions] = useState([]);
+  
     
-    const toggleSuggestions = () => {
-        setShowSuggestions(!showSuggestions);
-    };
-    
-    const handleSuggestTitle = async () => {
+      const fetchTitleSuggestions = async (description) => {
         try {
-            // Fetch title suggestions from an API
-            const response = await fetchTitleSuggestions(); // Implement fetchTitleSuggestions function
-            const data = await response.json();
-            setTitleSuggestions(data.suggestions); // Assuming the response contains an array of suggestions
-            toggleSuggestions(); // Show the suggestion panel
+          const response = await fetch('http://localhost:8000/boardly/openapi/title', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ description }),
+          });
+      
+          if (!response.ok) {
+            throw new Error('Failed to fetch title suggestions');
+          }
+      
+          const data = await response.json();
+          return data.suggestedTitle;
         } catch (error) {
-            console.error('Error fetching title suggestions:', error);
+          throw error;
         }
-    };
+      };
+     
+   
     
-    // Function to fetch title suggestions from an API
-    const fetchTitleSuggestions = async () => {
-        try {
-            // Call your API endpoint to get title suggestions
-            // Example: const response = await fetch('YOUR_API_ENDPOINT');
-            // return response;
-        } catch (error) {
-            throw error;
-        }
-    };
     
-    // "suggest title" button
-    <Button colorScheme='green' onClick={handleSuggestTitle}>Suggest Title</Button>
+    
+    
+    
 
     
-    //suggestion panel
-    {showSuggestions && (
-        <Box>
-            <Text>Suggestions:</Text>
-            <VStack align="start">
-                {titleSuggestions.map((suggestion, index) => (
-                    <Text key={index}>{suggestion}</Text>
-                ))}
-            </VStack>
-        </Box>
-    )}
-
-
+    
 
 
     return (
@@ -328,7 +317,7 @@ const Board = () => {
                         )}
                     </Flex>
                         {/* Render cards within the card list */}
-                        <Cards myCardList={board.id}></Cards>
+                        <Cards myCardList={board.id} cardDescription={formData.description}></Cards>
                         {/* Button to add a new card */}
                         <Button onClick={() => { setCardModalOpen(true); setCardListID(board.id) }}>Add Card</Button>
                       </Box>
