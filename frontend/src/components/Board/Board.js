@@ -43,6 +43,7 @@ const Board = () => {
             ...formData,
             [name]: value,
         });
+        console.log('Description:', value); // Add this line to log the description
     };
 
     const handleCreateCardlist = async (e) => {
@@ -317,7 +318,7 @@ const Board = () => {
                         )}
                     </Flex>
                         {/* Render cards within the card list */}
-                        <Cards myCardList={board.id} cardDescription={formData.description}></Cards>
+                        <Cards myCardList={board.id} description={formData.description}></Cards>
                         {/* Button to add a new card */}
                         <Button onClick={() => { setCardModalOpen(true); setCardListID(board.id) }}>Add Card</Button>
                       </Box>
