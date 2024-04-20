@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { VStack, Text, Divider, Link, Box, HStack, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure, Input, StackDivider, Icon, Textarea, Flex, Select, Card} from '@chakra-ui/react';
 import { CloseIcon, EditIcon, CheckIcon } from '@chakra-ui/icons';
 
-export const Cards = ({ myCardList, cardDescription }) => {
+export const Cards = ({ myCardList, description }) => {
     // Access myObject here
     console.log(myCardList);
     const [displayCards, setDisplayCards] = useState([]);
@@ -86,10 +86,11 @@ export const Cards = ({ myCardList, cardDescription }) => {
     };
     const handleSuggestTitle = async (selectedTitle) => {
         if (selectedTitle === "Suggest Title") {
-            console.log('Description sent to API:', cardDescription); // Log the description before fetching suggestions
+            console.log('Description sent to API:', description); // Log the description before fetching suggestions
 
           try {
-            const suggestedTitle = await fetchTitleSuggestions(cardDescription); // Use card description
+            const suggestedTitle = await fetchTitleSuggestions(description); // Use card description
+            console.log('Suggested Title:', suggestedTitle);
             setSuggestedTitle(suggestedTitle);
             setShowSuggestions(true); // Optional: Show a visual indicator (like a checkmark)
           } catch (error) {
