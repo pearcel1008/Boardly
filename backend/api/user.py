@@ -52,11 +52,11 @@ async def update_user_field(request: Request, user_id: str, field_name: str, new
 
 # Will be used for inviting users to boards
 
-async def user_get_all(request: Request) -> List[User]:
+async def user_get_all(request: Request) -> List[str]:
     users = []
     query = "SELECT * FROM c WHERE c.id LIKE 'user_%'"
     async for user in request.app.boardly_container.query_items(
         query=query
     ):
-        users.append(user)
+        users.append(user["id"].split("user_", 1)[-1])
     return users

@@ -47,7 +47,7 @@ async def user_update(request: Request, user_item: User):
 async def update_user_field(request: Request, user_id: str, field_name: str, new_value):
     return await user.update_user_field(request, user_id, field_name, new_value)
 
-@router.get("/user/get/all", response_model=List[User], tags=["User"])
+@router.get("/user/get/all", response_model=List[str], tags=["User"])
 async def user_get_all(request: Request):
     return await user.user_get_all(request)
 
