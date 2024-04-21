@@ -187,8 +187,10 @@ export const Cards = ({ myCardList, description }) => {
                         <DrawerCloseButton />
                         <DrawerHeader>ChatGPT Suggestions</DrawerHeader>
                         <DrawerBody>
-                            <Button onClick={() => { fetchDejargon(card.description); setShowDejargonText(true); }}>Dejargon</Button>
-                            <Button onClick={() => { fetchTitleSuggestions(card.title); setShowSuggestionText(true); }}>Suggest a title</Button>
+                            <Flex>
+                                <Button mr={4} onClick={() => { fetchDejargon(card.description); setShowDejargonText(true); }}>Dejargon</Button>
+                                <Button mr={4} onClick={() => { fetchTitleSuggestions(card.title); setShowSuggestionText(true); }}>Suggest a title</Button>
+                            </Flex>
                             {showDejargonText && (
                             <>
                             <Text>Here is what the description is trying to say: </Text>
