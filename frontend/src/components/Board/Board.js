@@ -23,10 +23,7 @@ const Board = () => {
     const theme = useTheme();
     const navigate = useNavigate();
     const location = useLocation();
-    const [showSuggestions, setShowSuggestions] = useState(false);
-    const [titleSuggestions, setTitleSuggestions] = useState([]);
     
-    const [suggestedTitle, setSuggestedTitle] = useState('');
     // Access the boards using location
     const boardId = location.state;
     console.log(boardId.ID); // THIS IS THE BOARD ID FOR API PURPOSES (parent_id is user_id)
@@ -214,50 +211,6 @@ const Board = () => {
         }
     };
 
-    const logCardTitles = () => {
-        displayCardlists.forEach(cardList => {
-            console.log("Card List Title:", cardList.title);
-            cardList.cards.forEach(card => {
-                console.log(" - Card Title:", card.title);
-            });
-        });
-    };
-
-
-  
-    
-      const fetchTitleSuggestions = async (description) => {
-        try {
-          const response = await fetch('http://localhost:8000/boardly/openapi/title', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ description }),
-          });
-      
-          if (!response.ok) {
-            throw new Error('Failed to fetch title suggestions');
-          }
-      
-          const data = await response.json();
-          return data.suggestedTitle;
-        } catch (error) {
-          throw error;
-        }
-      };
-     
-   
-    
-    
-    
-    
-    
-
-    
-    
-
-
     return (
         <Flex className="board-container" bgGradient='linear(to-tl, #211938, #271c4d )' >
             <div className="App-header">
@@ -292,8 +245,6 @@ const Board = () => {
                         bg={theme.colors.brand.menubutton}
                         boxShadow="0 0 20px rgba(0, 0, 0, 0.3)"
                         borderRadius="md"
-                        _hover={{ bg: theme.colors.brand.ultraviolet, color: theme.colors.brand.mauve }}
-                        _active={{ bg: theme.colors.brand.ultraviolet, color: 'white', borderColor: theme.colors.brand.ultraviolet }}
                       >
                         <Flex direction="row" alignItems="center" paddingLeft={'4.5vw'}>
                         {editingCardlistId !== board.id ? (

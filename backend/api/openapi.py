@@ -76,7 +76,7 @@ async def suggest_title(request: Request, description: str):
                     + "6. Ensure to describe each task that is in the title, include and if there is more than one task.\n"
                     + "7. Make sure that the title is properly formatted.\n"
                     + "8. Do not exclude any key details when suggesting a new title.\n"
-                    + "9. Only provide one suggestion."
+                    + "9. Provide three suggestions."
                 },
                 {"role": "user", "content": "Here's the title:\n" + content}
             ]
