@@ -33,66 +33,6 @@ export const Cards = ({ myCardList, description }) => {
         handleShowCards(); // Fetch data when component mounts
     }, []);
 
-    const ChatGPTFunction = (card) => (
-        <>
-        {/* CHATGPT FUNCTION */}
-        <Flex style={{ display: 'flex', justifyContent: 'flex-start' }}>
-        <Icon as={ChatIcon} ref={btnRef} color='purple' onClick={onChatGPTOpen}/>
-        </Flex>
-        <Drawer
-        isOpen={isChatGPTOpen}
-        placement='right'
-        onClose={onChatGPTClose}
-        finalFocusRef={btnRef}
-        >
-        <DrawerOverlay />
-        <DrawerContent>
-        <DrawerCloseButton />
-        <DrawerHeader>ChatGPT Suggestions</DrawerHeader>
-        <DrawerBody>
-            <Flex>
-                <Button mr={4} onClick={() => { fetchDejargon(card.description); setShowDejargonText(true); }}>Dejargon</Button>
-                <Button mr={4} onClick={() => { fetchTitleSuggestions(card.title); setShowSuggestionText(true); }}>Suggest a title</Button>
-            </Flex>
-            {showDejargonText && (
-            <>
-            <Text>Here is what the description is trying to say: </Text>
-                <Text fontWeight="bold">{dejargonSuggestion}</Text>
-            <Text>Would you like to change the description?</Text>
-            <Flex>
-                <Button onClick={() => { onChatGPTClose(); setShowDejargonText(false); }} colorScheme="red" mr={2}>
-                    No
-                </Button>
-                <Button onClick={() => { handleEditDescription(card.id, dejargonSuggestion); onChatGPTClose(); setShowDejargonText(false); }}colorScheme="green">
-                    Yes
-                </Button>
-            </Flex>
-            </>
-            )}
-            {showSuggestionText && (
-            <>
-            <Text>Here are some title suggestions that could replace the current title. Please select the best option for you.</Text>
-            <Box>
-                {titleSuggestions.map((title, index) => (
-                    <Button key={index} style={{ display: 'inline-flex', margin: '5px' }} onClick={() => { setEditingTitle(title); handleEditTitle(card.id, title); onChatGPTClose(); setShowSuggestionText(false); }}>
-                        {title}
-                    </Button>
-                ))}
-            </Box>
-            </>
-        )}
-        </DrawerBody>
-        <DrawerFooter>
-            <Button variant='outline' mr={3} onClick={() => {onChatGPTClose(); setShowSuggestionText(false);}}>
-            Cancel
-            </Button>
-        </DrawerFooter>
-        </DrawerContent>
-        </Drawer>
-        {/* END OF CHATGPT FUNCTION */}
-        </>
-      )
-
     const handleShowCards = async () => {
         var parts = myCardList.split('_');
         const ID = parts[1];
@@ -230,36 +170,62 @@ export const Cards = ({ myCardList, description }) => {
         }
       };
      
-   
+    const closingChatGPT = () => {
+        setShowSuggestionText(false);
+        setShowDejargonText(false);
+        setDejargonSuggestion(""); // Clearing dejargonSuggestion value
+        setTitleSuggestions([]); // Clearing titleSuggestions array
+    };
     return (
         <div>
             {/* Render cards within the card list */}
             {displayCards.map((card, cardIndex) => (
              <Flex key={cardIndex} justifyContent="center" alignItems="center" mt={3}>
-                <Box className="card" w="200px" h="75px" p={3} bg="white" borderRadius="md" _hover={{ boxShadow: '0 0 0 2px purple', cursor: 'pointer', }} onClick={() => {
+                <Box mb={4} className="card" w="200px" h="75px" p={3} bg="white" borderRadius="md" _hover={{ boxShadow: '0 0 0 2px purple', cursor: 'pointer', }} onClick={() => {
                     setOpenCardId(card.id)
                 }}>
                     {/* CARD MODAL */}
                     <Modal onClose={() =>{setOpenCardId(null)}} size="xl" isOpen={openCardId === card.id}>
                         <ModalOverlay bg='none' backdropFilter='auto' backdropBlur='10px' />
-                        <ModalContent>
+                        <ModalContent width="1000px" height="500px">
                             <ModalHeader>
-                            <Flex alignItems="center">
-                                <Text>{card.title}</Text>
-                                {/* CHATGPT FUNCTION */}
-                                <Icon className="cursor-pointer" as={ChatIcon} ref={btnRef} color='purple' ml={150} onClick={onChatGPTOpen}/>
-                                <Text ml={2} fontSize="sm">AI Enchancement</Text>
+                            <Flex alignItems="center" mt={4}>
+                                {editingCardId !== card.id ? (
+                                        <>
+                                            <Text fontSize={'xl'} color={'black'} mr={4}>{card.title}</Text>
+                                            <Icon as={EditIcon} w={3} h={3} color={'gray'} _hover={{color: 'green', transform: 'scale(1.2)'}}
+                                                onClick={() => { setEditingCardId(card.id); setEditingTitle(card.title); }} />
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Input
+                                                value={editingTitle}
+                                                onChange={(e) => setEditingTitle(e.target.value)}
+                                                size="sm"
+                                                autoFocus
+                                                onBlur={() => handleEditTitle(card.id, editingTitle)}
+                                                onKeyDown={(e) => { if(e.key === 'Enter') { handleEditTitle(card.id, editingTitle); }}}
+                                            />
+                                            <Icon ml={4} as={CheckIcon} w={3} h={3} color={'green'} _hover={{color: 'blue', transform: 'scale(1.2)'}}
+                                                onClick={() => handleEditTitle(card.id, editingTitle)} />
+                                        </>
+                                    )}
                             </Flex>
+                            <Flex justifyContent={"flex-end"}>
+                                {/* CHATGPT FUNCTION */}
+                                <Icon className="cursor-pointer" as={ChatIcon} ref={btnRef} color='purple' onClick={onChatGPTOpen}/>
+                                <Text fontSize="sm" ml={2}>AI Enchancement</Text>
+                                </Flex>
                             </ModalHeader>
                             <Drawer
-                            isOpen={isChatGPTOpen}
-                            placement='right'
-                            onClose={onChatGPTClose}
-                            finalFocusRef={btnRef}
+                                isOpen={isChatGPTOpen}
+                                placement='right'
+                                onClose={onChatGPTClose}
+                                finalFocusRef={btnRef}
                             >
                             <DrawerOverlay />
                             <DrawerContent>
-                            <DrawerCloseButton />
+                            <DrawerCloseButton onClick={() => { setShowSuggestionText(false); closingChatGPT() }}/>
                             <DrawerHeader>ChatGPT Suggestions</DrawerHeader>
                             <DrawerBody>
                                 <Flex>
@@ -270,12 +236,12 @@ export const Cards = ({ myCardList, description }) => {
                                 <>
                                 <Text>Here is what the description is trying to say: </Text>
                                     <Text fontWeight="bold">{dejargonSuggestion}</Text>
-                                <Text>Would you like to change the description?</Text>
+                                <Text>Would you like to change the description to this?</Text>
                                 <Flex>
-                                    <Button onClick={() => { onChatGPTClose(); setShowDejargonText(false); }} colorScheme="red" mr={2}>
+                                    <Button onClick={() => { onChatGPTClose(); closingChatGPT() }} colorScheme="red" mr={2}>
                                         No
                                     </Button>
-                                    <Button onClick={() => { handleEditDescription(card.id, dejargonSuggestion); onChatGPTClose(); setShowDejargonText(false); }}colorScheme="green">
+                                    <Button onClick={() => { handleEditDescription(card.id, dejargonSuggestion); onChatGPTClose(); closingChatGPT() }}colorScheme="green">
                                         Yes
                                     </Button>
                                 </Flex>
@@ -286,7 +252,7 @@ export const Cards = ({ myCardList, description }) => {
                                 <Text>Here are some title suggestions that could replace the current title. Please select the best option for you.</Text>
                                 <Box>
                                     {titleSuggestions.map((title, index) => (
-                                        <Button key={index} style={{ display: 'inline-flex', margin: '5px' }} onClick={() => { setEditingTitle(title); handleEditTitle(card.id, title); onChatGPTClose(); setShowSuggestionText(false); }}>
+                                        <Button key={index} style={{ display: 'inline-flex', margin: '5px' }} onClick={() => { setEditingTitle(title); handleEditTitle(card.id, title); onChatGPTClose(); closingChatGPT() }}>
                                             {title}
                                         </Button>
                                     ))}
@@ -295,7 +261,7 @@ export const Cards = ({ myCardList, description }) => {
                             )}
                             </DrawerBody>
                             <DrawerFooter>
-                                <Button variant='outline' mr={3} onClick={() => {onChatGPTClose(); setShowSuggestionText(false);}}>
+                                <Button variant='outline' mr={3} onClick={() => {onChatGPTClose(); closingChatGPT() }}>
                                 Cancel
                                 </Button>
                             </DrawerFooter>
@@ -304,6 +270,7 @@ export const Cards = ({ myCardList, description }) => {
                             {/* END OF CHATGPT FUNCTION */}
                         <ModalCloseButton />
                         <ModalBody>
+                            <Text color={"darkgray"} fontSize="lg">Description</Text>
                             {card.description}
                         </ModalBody>
                         <ModalFooter>
