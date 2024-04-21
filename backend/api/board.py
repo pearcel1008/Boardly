@@ -67,6 +67,8 @@ async def board_get_users(request: Request, user_id: str) -> List[Board]:
 
 async def invite(request: Request, user_id: str, board_id: str):
     user_item = await user_get(request, user_id)
+    if user_item is None:
+        return "User does not exist."
     board_item = await board_get(request, board_id)
     # add board id to user's list of boards
     user_dict = jsonable_encoder(user_item)
