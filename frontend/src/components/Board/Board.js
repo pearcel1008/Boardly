@@ -239,7 +239,7 @@ const Board = () => {
                   {displayCardlists.map((board, boardIndex) => (
                       <Flex position="relative" w="300px">
                       <Box
-                        className='cursor-pointer text-white py-2'
+                        className='text-white py-2'
                         w="300px"
                         h="auto"
                         bg={theme.colors.brand.menubutton}
