@@ -16,10 +16,6 @@ class Card(BaseModel):
     description : str
     parent_id : str
     order : int # Order in List
-    #assignees : List[str] = [] # More important come collaboration part of dev
-    # last_updated :
-    #priority : int # 1-3, 1 being highest priority
-    #attachments : List[str] = [] # List of URLs (Attaching files would be a lot to implement, can revisit later)
 
 class CardList(BaseModel):
     id: str
@@ -27,7 +23,6 @@ class CardList(BaseModel):
     cards : List[str] = [] # List of Card ids
     order : int # Order in Board
     parent_id : str
-    # last_updated :
 
 class Board(BaseModel):
     id : str
@@ -36,4 +31,3 @@ class Board(BaseModel):
     parent_id : str
     cardlists : List[str] = [] # List of CardList ids
     members : List[str] = [] # List of users, admin added upon board creation
-    # last_updated :

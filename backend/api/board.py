@@ -64,3 +64,19 @@ async def board_get_users(request: Request, user_id: str) -> List[Board]:
             ):
                 boards.append(board)
     return boards
+
+async def invite(request: Request, user_id: str, board_id: str):
+    user_item = await user_get(request, user_id)
+    board_item = await board_get(request, board_id)
+    # add board id to user's list of boards
+    user_dict = jsonable_encoder(user_item)
+    user_boards = user_dict['board_member']
+    user_boards.append(board_id)
+    # update user in DB
+    await request.app.boardly_container.replace_item("user_" + user_id, user_dict)
+    # update board's list of members
+    board_dict=jsonable_encoder(board_item)
+    board_users = board_dict['members']
+    board_users.append(user_id)
+    await request.app.boardly_container.replace_item("board_" + board_id, board_dict)
+    return "User added successfully!"

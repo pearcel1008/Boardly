@@ -77,6 +77,10 @@ async def update_board_field(request: Request, board_id: str, field_name: str, n
 async def board_get_users(request: Request, user_id: str):
     return await board.board_get_users(request, user_id)
 
+@router.post("/board/invite", tags=["Board"])
+async def invite(request: Request, user_id: str, board_id: str):
+    return await board.invite(request, user_id, board_id)
+
 # Card manipulation
 
 @router.post("/card/create", response_model=Card, tags=["Card"])

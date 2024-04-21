@@ -66,10 +66,12 @@ async def board_delete(request: Request, id: str):
     cardlists = board_item['cardlists']
     for cardlist in cardlists:
         await cardlist_delete(request, cardlist)
-    # remove from parent user
-    parent_item = await user_get(request, board_item['parent_id'])
-    parent_item['board_member'].remove(id.split("board_", 1)[-1])
-    parent_item_dict = jsonable_encoder(parent_item)
-    await request.app.boardly_container.replace_item("user_" + board_item['parent_id'], parent_item_dict)
+    # remove for all members
+    members = board_item['members']
+    for member in members:
+        member_item = await user_get(request, member)
+        member_item['board_member'].remove(id.split("board_", 1)[-1])
+        member_item_dict = jsonable_encoder(member_item)
+        await request.app.boardly_container.replace_item("user_" + member, member_item_dict)
     await request.app.boardly_container.delete_item(id, partition_key=pk)
     return "Item successfully deleted!"
