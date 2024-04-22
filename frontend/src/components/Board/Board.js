@@ -313,6 +313,7 @@ const Board = () => {
                                     </>
                                 ) : (
                                     <>
+                                        <Flex>
                                         <Input
                                             value={editingTitle}
                                             onChange={(e) => setEditingTitle(e.target.value)}
@@ -321,8 +322,9 @@ const Board = () => {
                                             onBlur={() => handleEditTitle(board.id, editingTitle)}
                                             onKeyDown={(e) => { if(e.key === 'Enter') { handleEditTitle(board.id, editingTitle); }}}
                                         />
-                                        <Icon as={CheckIcon} w={3} h={3} color={'green'} _hover={{color: 'blue', transform: 'scale(1.2)'}}
+                                        <Icon ml={4} mt={2} as={CheckIcon} w={3} h={3} color={'green'} _hover={{color: 'blue', transform: 'scale(1.2)'}}
                                             onClick={() => handleEditTitle(board.id, editingTitle)} />
+                                        </Flex>
                                     </>
                                 )}
                             </Flex>

@@ -21,10 +21,10 @@ export const Cards = ({ myCardList, description }) => {
     const [editingTitle, setEditingTitle] = useState('');
     const [titleSuggestions, setTitleSuggestions] = useState([]);
     const [dejargonSuggestion, setDejargonSuggestion] = useState('');
+    const [taskDuration, setTaskDuration] = useState('');
     const [showDejargonText, setShowDejargonText] = useState(false);
     const [showSuggestionText, setShowSuggestionText] = useState(false);
     const { isOpen: isChatGPTOpen, onOpen: onChatGPTOpen, onClose:onChatGPTClose } = useDisclosure()
-    const { isOpen: isCardOpen, onOpen: onCardOpen, onClose: onCardClose } = useDisclosure()
     const [openCardId, setOpenCardId] = useState(null); // State to track which card modal is open
 
     const btnRef = React.useRef()
@@ -169,6 +169,27 @@ export const Cards = ({ myCardList, description }) => {
           throw error;
         }
       };
+
+      const fetchTaskDurations = async (cardTitle) => {
+        try {
+          const response = await fetch(`http://localhost:8000/boardly/openapi/duration?description=${cardTitle}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ description }),
+          });
+      
+          if (!response.ok) {
+            throw new Error('Failed to fetch title suggestions');
+          }
+          
+          const data = await response.json();
+          setTaskDuration(data);
+        } catch (error) {
+          throw error;
+        }
+      };
      
     const closingChatGPT = () => {
         setShowSuggestionText(false);
@@ -181,7 +202,8 @@ export const Cards = ({ myCardList, description }) => {
             {/* Render cards within the card list */}
             {displayCards.map((card, cardIndex) => (
              <Flex key={cardIndex} justifyContent="center" alignItems="center" mt={3}>
-                <Box mb={4} className="card" w="200px" h="75px" p={3} bg="white" borderRadius="md" _hover={{ boxShadow: '0 0 0 2px purple', cursor: 'pointer', }} onClick={() => {
+                <Box mb={4} className="card" minW="200px" whiteSpace="normal" p={6} bg="white" borderRadius="md" _hover={{ boxShadow: '0 0 0 2px purple', cursor: 'pointer', }} onClick={() => {
+                    fetchTaskDurations(card.title)
                     setOpenCardId(card.id)
                 }}>
                     {/* CARD MODAL */}
@@ -236,15 +258,6 @@ export const Cards = ({ myCardList, description }) => {
                                 <>
                                 <Text>Here is what the description is trying to say: </Text>
                                     <Text fontWeight="bold">{dejargonSuggestion}</Text>
-                                <Text>Would you like to change the description to this?</Text>
-                                <Flex>
-                                    <Button onClick={() => { onChatGPTClose(); closingChatGPT() }} colorScheme="red" mr={2}>
-                                        No
-                                    </Button>
-                                    <Button onClick={() => { handleEditDescription(card.id, dejargonSuggestion); onChatGPTClose(); closingChatGPT() }}colorScheme="green">
-                                        Yes
-                                    </Button>
-                                </Flex>
                                 </>
                                 )}
                                 {showSuggestionText && (
@@ -272,6 +285,7 @@ export const Cards = ({ myCardList, description }) => {
                         <ModalBody>
                             <Text color={"darkgray"} fontSize="lg">Description</Text>
                             {card.description}
+                            <Text color={"darkgray"} mt={8}>This task normally takes about {taskDuration} </Text>
                         </ModalBody>
                         <ModalFooter>
                             <Button onClick={() => {setOpenCardId(null)}}>Close</Button>
@@ -281,7 +295,7 @@ export const Cards = ({ myCardList, description }) => {
                     {/* END OF CARD MODAL */}
 
                     <Flex direction="column" position="relative">
-                        <Icon as={CloseIcon} w={3} h={3} color={'gray'} position="absolute" right={0} top={0} _hover={{color: 'red', transform: 'scale(1.2)'}} onClick={()=>handleDeleteCard(card.id)} />
+                        <Icon as={CloseIcon} w={3} h={3} color={'gray'} position="absolute" right={-4} top={-4} _hover={{color: 'red', transform: 'scale(1.2)'}} onClick={()=>handleDeleteCard(card.id)} />
                         {/* Flex container for the title, edit icon */}
                         <Flex direction="column" alignItems="center">
                             <Flex direction="row" alignItems="center">
