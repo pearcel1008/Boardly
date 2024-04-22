@@ -172,3 +172,7 @@ async def suggest_title(request: Request, description: str):
 @router.post("/openapi/tags", tags=["OpenAI APIs"])
 async def generate_tags(request: Request, description: str):
     return await openapi.generate_tags(request, description)
+
+@router.post("/openapi/duration", tags=["OpenAI APIs"])
+async def generate_tags(request: Request, description: str):
+    return await openapi.suggest_time(request, description)

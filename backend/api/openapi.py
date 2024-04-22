@@ -74,11 +74,36 @@ async def suggest_title(request: Request, description: str):
                     + "4. Use words that be easily understood by a non software engineer.\n"
                     + "5. Avoid using overly technical terms or acronyms.\n"
                     + "6. Ensure to describe each task that is in the title, include and if there is more than one task.\n"
-                    + "7. Make sure that the title is properly formatted.\n"
-                    + "8. Do not exclude any key details when suggesting a new title.\n"
-                    + "9. Provide three suggestions."
+                    + "7. Do not surround the suggestions with any double quotations or single quotations.\n"
+                    + "8. Do not use punctuation besides a comma delimiter between suggestions\n"
+                    + "9. Do not exclude any key details when suggesting a new title.\n"
+                    + "10. Provide three suggestions in number format."
                 },
                 {"role": "user", "content": "Here's the title:\n" + content}
+            ]
+        )
+        return response.choices[0].message.content
+    except Exception as e:
+        return {"error": str(e)}
+    
+async def suggest_time(request: Request, description: str):
+    content = description
+    try:
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            max_tokens=1000,
+            messages=[
+                {"role": "system", "content": 
+                    "You will be acting as a time estimation assistant."
+                    + "You will suggest how long a task should take based on the title and description given.\n"
+                    + "RULES:\n"
+                    + "1. Understand the task's scope and complexity from the description to accurately assess the effort required.\n"
+                    + "2. Identify key deliverables and milestones within the task to better estimate the completion time.\n"
+                    + "3. Use past similar tasks as a benchmark to guide the time estimation.\n"
+                    + "4. Only provide how long it will take. Do not provide extra description.\n"
+                    + "5. Provide durations such as 1 week or 5 days."
+                },
+                {"role": "user", "content": "Here's the task title and description:\n" + content}
             ]
         )
         return response.choices[0].message.content

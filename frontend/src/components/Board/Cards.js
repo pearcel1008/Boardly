@@ -295,7 +295,7 @@ export const Cards = ({ myCardList, description }) => {
                     {/* END OF CARD MODAL */}
 
                     <Flex direction="column" position="relative">
-                        <Icon as={CloseIcon} w={3} h={3} color={'gray'} position="absolute" right={-4} top={-4} _hover={{color: 'red', transform: 'scale(1.2)'}} onClick={()=>handleDeleteCard(card.id)} />
+                        <Icon as={CloseIcon} w={3} h={3} color={'gray'} position="absolute" right={-4} top={-4} _hover={{color: 'red', transform: 'scale(1.2)'}} onClick={(event)=>{ handleDeleteCard(card.id); event.stopPropagation()}} />
                         {/* Flex container for the title, edit icon */}
                         <Flex direction="column" alignItems="center">
                             <Flex direction="row" alignItems="center">
