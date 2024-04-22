@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { VStack, Text, Divider, Link, Box, HStack, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure, Input, StackDivider, Icon, Textarea } from '@chakra-ui/react';
+import { VStack, Text, Divider, Link, Box, HStack, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure, Input, StackDivider, Icon, Textarea, Select } from '@chakra-ui/react';
 import TopBar from '../topbar/Topbar';
 import { useNavigate, useLocation } from 'react-router-dom';
 import SuggestionsPanel from './SuggestionsPanel'; 
@@ -20,6 +20,8 @@ const Board = () => {
     const [cardlistID, setCardListID] = useState('');
     const [editingCardlistId, setEditingCardlistId] = useState(null);
     const [editingTitle, setEditingTitle] = useState('');
+    const [isInviteModalOpen, setInviteModalOpen] = useState(false);
+    const [selectedUser, setSelectedUser] = useState('');
     const theme = useTheme();
     const navigate = useNavigate();
     const location = useLocation();
@@ -33,6 +35,7 @@ const Board = () => {
         title: '',
         description: ''
     });
+    const [users, setUsers] = useState([]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -211,72 +214,132 @@ const Board = () => {
         }
     };
 
+    const getAllUsers = async () => {
+        // hit endpoint at http://localhost:8000/boardly/user/get/all
+        // return all users in such a way that they can be displayed in the dropdown
+        try {
+            const response = await fetch('http://localhost:8000/boardly/user/get/all');
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            console.log(data);
+            return data;
+        }
+        catch (error) {
+            console.error('Error getting all users:', error);
+        }
+    };
+
+    useEffect(() => {
+        getAllUsers().then((data) => {
+            setUsers(data);
+        });
+    }, []);
+
+    const handleInvite = async (e) => {
+        console.log("Selected user:", selectedUser.trim(), "invited to board:", boardId.ID);
+    
+        // Construct the query parameters
+        const queryParams = new URLSearchParams({
+            user_id: selectedUser.trim(),
+            board_id: boardId.ID,
+        });
+    
+        try {
+            const response = await fetch(`http://localhost:8000/boardly/board/invite?${queryParams}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                // Note: You may not need to send a body if the API only expects query parameters
+            });
+    
+            if (!response.ok) {
+                const errorBody = await response.json();
+                console.error('Server-side validation errors:', errorBody);
+                throw new Error(`Server responded with status: ${response.status}`);
+            }
+    
+            const data = await response.json();
+            console.log('User invited successfully:', data);
+        } catch (error) {
+            console.error('Error inviting user:', error);
+        }
+    };
+
     return (
         <Flex className="board-container" bgGradient='linear(to-tl, #211938, #271c4d )' >
             <div className="App-header">
                 <TopBar />
             </div>
-            <HStack className="board-header" justifyContent="space-between" alignItems="center">
-                <Button className="my-20 mx-5 text-white" bg='transparent' _hover={{ color: theme.colors.brand.mauve, bg: theme.colors.transparent }} onClick={handleNavigateDashboard}>
-                    <Icon as={ChevronLeftIcon} w={6} h={6} color="white" _hover={{ color: theme.colors.brand.mauve, bg: theme.colors.transparent }} 
-                    />
-                </Button>
-                <Button className='' onClick={() => onOpen()}
-                    bg={isOpen ? theme.colors.brand.ultraviolet : theme.colors.brand.semiprimary}
-                    color={isOpen ? 'white' : 'white'}
-                    borderColor={isOpen ? theme.colors.brand.spacecadet : 'initial'}
-                    _hover={{
-                        bg: theme.colors.brand.ultraviolet,
-                        color: theme.colors.brand.mauve,
-                        borderColor: theme.colors.brand.spacecadet,
-                    }}>
-                    Create Cardlist
-                    <AddIcon className='ml-2' boxSize={3} />
-                </Button>
-            </HStack>
-            <Flex className="board-content px-10">
-            <HStack spacing="4" align="stretch" flexWrap="wrap" justifyContent="center" alignItems="center">
-                  {displayCardlists.map((board, boardIndex) => (
-                      <Flex position="relative" w="300px">
-                      <Box
-                        className='text-white py-2'
-                        w="300px"
-                        h="auto"
-                        bg={theme.colors.brand.menubutton}
-                        boxShadow="0 0 20px rgba(0, 0, 0, 0.3)"
-                        borderRadius="md"
-                      >
-                        <Flex direction="row" alignItems="center" paddingLeft={'4.5vw'}>
-                        {editingCardlistId !== board.id ? (
-                            <>
-                                <Text fontSize={'xl'} color={'white'} mr={2}>{board.title}</Text>
-                                <Icon as={EditIcon} w={3} h={3} color={'gray'} _hover={{color: 'green', transform: 'scale(1.2)'}}
-                                    onClick={() => { setEditingCardlistId(board.id); setEditingTitle(board.title); }} />
-                            </>
-                        ) : (
-                            <>
-                                <Input
-                                    value={editingTitle}
-                                    onChange={(e) => setEditingTitle(e.target.value)}
-                                    size="sm"
-                                    autoFocus
-                                    onBlur={() => handleEditTitle(board.id, editingTitle)}
-                                    onKeyDown={(e) => { if(e.key === 'Enter') { handleEditTitle(board.id, editingTitle); }}}
-                                />
-                                <Icon as={CheckIcon} w={3} h={3} color={'green'} _hover={{color: 'blue', transform: 'scale(1.2)'}}
-                                    onClick={() => handleEditTitle(board.id, editingTitle)} />
-                            </>
-                        )}
-                    </Flex>
-                        {/* Render cards within the card list */}
-                        <Cards myCardList={board.id} description={formData.description}></Cards>
-                        {/* Button to add a new card */}
-                        <Button onClick={() => { setCardModalOpen(true); setCardListID(board.id) }}>Add Card</Button>
-                      </Box>
-                      <Icon as={CloseIcon} position="absolute" right="2" top="2" w={3} h={3} color="white" _hover={{ color: 'red', transform: 'scale(1.2)' }} onClick={()=>handleDeleteCardList(board.id)}/>
-                    </Flex>
-                  ))}
-              </HStack>
+            <Flex className="board-main">
+                <HStack className="board-header" justifyContent="space-between" alignItems="center">
+                    <Button className="my-20 mx-5 text-white" bg='transparent' _hover={{ color: theme.colors.brand.mauve, bg: theme.colors.transparent }} onClick={handleNavigateDashboard}>
+                        <Icon as={ChevronLeftIcon} w={6} h={6} color="white" _hover={{ color: theme.colors.brand.mauve, bg: theme.colors.transparent }} 
+                        />
+                    </Button>
+                    <Button className='' onClick={() => onOpen()}
+                        bg={isOpen ? theme.colors.brand.ultraviolet : theme.colors.brand.semiprimary}
+                        color={isOpen ? 'white' : 'white'}
+                        borderColor={isOpen ? theme.colors.brand.spacecadet : 'initial'}
+                        _hover={{
+                            bg: theme.colors.brand.ultraviolet,
+                            color: theme.colors.brand.mauve,
+                            borderColor: theme.colors.brand.spacecadet,
+                        }}>
+                        Create Cardlist
+                        <AddIcon className='ml-2' boxSize={3} />
+                    </Button>
+                </HStack>
+                <Flex className="board-content px-10">
+                    <HStack spacing="4" align="stretch" flexWrap="wrap" justifyContent="center" alignItems="center">
+                        {displayCardlists.map((board, boardIndex) => (
+                            <Flex position="relative" w="300px">
+                            <Box
+                                className='text-white py-2'
+                                w="300px"
+                                h="auto"
+                                bg={theme.colors.brand.menubutton}
+                                boxShadow="0 0 20px rgba(0, 0, 0, 0.3)"
+                                borderRadius="md"
+                            >
+                                <Flex direction="row" alignItems="center" paddingLeft={'4.5vw'}>
+                                {editingCardlistId !== board.id ? (
+                                    <>
+                                        <Text fontSize={'xl'} color={'white'} mr={2}>{board.title}</Text>
+                                        <Icon as={EditIcon} w={3} h={3} color={'gray'} _hover={{color: 'green', transform: 'scale(1.2)'}}
+                                            onClick={() => { setEditingCardlistId(board.id); setEditingTitle(board.title); }} />
+                                    </>
+                                ) : (
+                                    <>
+                                        <Input
+                                            value={editingTitle}
+                                            onChange={(e) => setEditingTitle(e.target.value)}
+                                            size="sm"
+                                            autoFocus
+                                            onBlur={() => handleEditTitle(board.id, editingTitle)}
+                                            onKeyDown={(e) => { if(e.key === 'Enter') { handleEditTitle(board.id, editingTitle); }}}
+                                        />
+                                        <Icon as={CheckIcon} w={3} h={3} color={'green'} _hover={{color: 'blue', transform: 'scale(1.2)'}}
+                                            onClick={() => handleEditTitle(board.id, editingTitle)} />
+                                    </>
+                                )}
+                            </Flex>
+                                {/* Render cards within the card list */}
+                                <Cards myCardList={board.id} description={formData.description}></Cards>
+                                {/* Button to add a new card */}
+                                <Button onClick={() => { setCardModalOpen(true); setCardListID(board.id) }}>Add Card</Button>
+                            </Box>
+                            <Icon as={CloseIcon} position="absolute" right="2" top="2" w={3} h={3} color="white" _hover={{ color: 'red', transform: 'scale(1.2)' }} onClick={()=>handleDeleteCardList(board.id)}/>
+                            </Flex>
+                        ))}
+                    </HStack>
+                </Flex>
+                <Flex justifyContent="flex-end" width="100%" position="absolute" right="0" top="-2" zIndex={'200'}>
+                    <Button mt="20px" mr="20px" onClick={() => setInviteModalOpen(true)}>Invite User</Button>
+                </Flex>
+
             </Flex>
             <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay />
@@ -318,6 +381,32 @@ const Board = () => {
                             Cancel
                         </Button>
                         <Button colorScheme='green' onClick={() => handleCreateCard(cardlistID)}>Create</Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
+            <Modal isOpen={isInviteModalOpen} onClose={() => setInviteModalOpen(false)}>
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>Invite User</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody pb={6}>
+                        <Select
+                        placeholder="Select user ID"
+                        value={selectedUser}
+                        onChange={(e) => setSelectedUser(e.target.value)}
+                        >
+                        {users.map((email, index) => (
+                            <option key={index} value={email}>{email}</option>
+                        ))}
+                        </Select>
+                    </ModalBody>
+                    <ModalFooter>
+                    <Button colorScheme='purple' mr={3} onClick={() => setInviteModalOpen(false)}>
+                        Cancel
+                    </Button>
+                    <Button colorScheme='green' onClick={() => handleInvite()}>
+                        Invite
+                    </Button>
                     </ModalFooter>
                 </ModalContent>
             </Modal>
