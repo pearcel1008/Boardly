@@ -25,9 +25,9 @@ function Topbar() {
       </Box>
       <Spacer />
       <Box p="2">
-        <Center className="h-full cursor-pointer">
+        {/* <Center className="h-full cursor-pointer">
           {isLoggedIn && <ProfileMenu />} 
-        </Center>
+        </Center> */}
       </Box>
     </Flex>
   );
