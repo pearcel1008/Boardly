@@ -41,7 +41,13 @@ This is the swaggerUI page, where you can see request parameters, response forma
 Click the dropdown for a given API, click Try It Out, click execute, grab the URL beneath "curl"
 
 ## Contibuting 
-Create a fork of the repository. From your fork, you can work on your main branch or create sub-branches for functionality. Submit pull requests to main branch, then merge if you don't want a code review.  
+Create a fork of the repository. From your fork, you can work on your main branch or create sub-branches for functionality. Submit pull requests to main branch.
 
 ## Known Issues
-- MSYS2 gcc causes errors with installing backend dependencies 
+- MSYS2 gcc causes errors with installing backend dependencies
+
+## Contributions
+Andie Pearce: Scrum Master, Lead Backend Developer
+Carolina Verde: Project Manager, Backend Developer, Frontend Lead
+Jeremy Martin: Frontend Developer
+Leila Diab: Frontend Developer
