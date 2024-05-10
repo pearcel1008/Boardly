@@ -1,6 +1,8 @@
 # Boardly
 Boardly is a collaborative project management tool that uses boards, lists, and cards to help individuals and teams organize and prioritize tasks. It provides a visual and flexible way to track progress, assign responsibilities, and manage workflows. It integrates OpenAI to foster the creation of detailed, quality boards. 
 
+Boardly was developed for Senior Project at the University of Florida during Spring 2024.
+
 ## Dependencies, Installation, and Setup
 ### Frontend
 Clone repository in VS Code
